@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@tauri-apps/cli": "^1.0.0-beta-rc.4",
     "core-js": "^3.6.5",
     "vue": "^3.0.0"
   },
@@ -18,7 +19,8 @@
     "@vue/compiler-sfc": "^3.0.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
-    "eslint-plugin-vue": "^7.0.0"
+    "eslint-plugin-vue": "^7.0.0",
+    "vue-cli-plugin-tauri": "~1.0.0-beta-rc.2"
   },
   "eslintConfig": {
     "root": true,
