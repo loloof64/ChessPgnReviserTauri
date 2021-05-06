@@ -1,24 +1,7 @@
-# chess-pgn-reviser
+# Chess Pgn Reviser
 
-## Project setup
-```
-yarn install
-```
+Load your chess Pgn file and try to find moves from your side.
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
+## Credits
 
-### Compiles and minifies for production
-```
-yarn build
-```
-
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+Application icon downloaded from https://www.flaticon.com/free-icon/chess_178148 and designed by Flat Icons.

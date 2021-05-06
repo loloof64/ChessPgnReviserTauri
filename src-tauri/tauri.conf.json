@@ -13,7 +13,7 @@
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "com.tauri.dev",
+      "identifier": "com.loloof64",
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
@@ -24,8 +24,8 @@
       "resources": [],
       "externalBin": [],
       "copyright": "",
-      "category": "DeveloperTool",
-      "shortDescription": "",
+      "category": "Game",
+      "shortDescription": "Load your chess Pgn file and try to find moves from your side.",
       "longDescription": "",
       "deb": {
         "depends": [],
