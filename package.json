@@ -1,8 +1,8 @@
 {
   "name": "chess-pgn-reviser",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "private": true,
-  "release_message": "First attempt to fix CI.",
+  "release_message": "Added chess board.",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
