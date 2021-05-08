@@ -943,6 +943,11 @@
     cssnano-preset-default "^4.0.0"
     postcss "^7.0.0"
 
+"@loloof64/chessboard-component@^0.16.4":
+  version "0.16.4"
+  resolved "https://registry.yarnpkg.com/@loloof64/chessboard-component/-/chessboard-component-0.16.4.tgz#959c81222dcfe7385eadd4d7f1b82044cfda4141"
+  integrity sha512-sXpKiAcOYpjWoRE5e8ba89pMMUK0X00iuBmFkFvMS7ost8KlmySPEC0KpjtgFRc/zZGs6VItJ53ndjLDBr4aAA==
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.npm.taobao.org/@mrmlnc/readdir-enhanced/download/@mrmlnc/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"
