@@ -1,7 +1,6 @@
 <template>
-  <div>
+  <div class="main_zone">
     <button @click="newGame">New game</button>
-  </div>
   <loloof64-chessboard
     v-pre
     ref="board"
@@ -11,6 +10,7 @@
     white_player_human="true"
     black_player_human="true"
   ></loloof64-chessboard>
+  </div>
 </template>
 
 <script>
@@ -21,6 +21,7 @@ export default {
     const board = ref();
 
     const newGame = function () {
+      console.dir(board.value);
       board.value.newGame();
     };
 
@@ -33,4 +34,9 @@ export default {
 </script>
 
 <style scoped>
+.main_zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 </style>
