@@ -1,12 +1,12 @@
 <template>
   <div class="main_zone">
-    <button @click="newGame">New game</button>
+    <div class="buttons_zone">
+      <img class="button" @click="newGame" width="50" height="50" src="../assets/start.png" />
+    </div>
   <loloof64-chessboard
     v-pre
     ref="board"
     size="300"
-    left="50"
-    top="50"
     white_player_human="true"
     black_player_human="true"
   ></loloof64-chessboard>
@@ -21,7 +21,6 @@ export default {
     const board = ref();
 
     const newGame = function () {
-      console.dir(board.value);
       board.value.newGame();
     };
 
@@ -38,5 +37,13 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.buttons_zone {
+  margin: 10px 0px;
+}
+
+.button {
+  border: 1px solid black;
 }
 </style>
