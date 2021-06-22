@@ -8,6 +8,7 @@ Application icon downloaded from https://www.flaticon.com/free-icon/chess_178148
 
 Other images have been downloaded from flaticon :
 * start.png : from https://www.flaticon.com/free-icon/finish_2164730, designed by SmashIcons
+* reverse.png : from https://www.flaticon.com/free-icon/arrows_685838, designed by Good Ware
 
 ## Developpers
 

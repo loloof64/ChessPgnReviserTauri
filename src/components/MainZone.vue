@@ -2,11 +2,13 @@
   <div class="main_zone">
     <div class="buttons_zone">
       <img class="button" @click="newGame" width="50" height="50" src="../assets/start.png" />
+      <img class="button" @click="reverseBoard" width="50" height="50" src="../assets/reverse.png" />
     </div>
   <loloof64-chessboard
     v-pre
     ref="board"
     size="300"
+    :reversed="reversed"
     white_player_human="true"
     black_player_human="true"
   ></loloof64-chessboard>
@@ -19,14 +21,22 @@ import { ref } from "vue";
 export default {
   setup() {
     const board = ref();
+    const reversed = ref(false);
 
     const newGame = function () {
       board.value.newGame();
     };
 
+    const reverseBoard = function() {
+      reversed.value = !reversed.value;
+      console.log(reversed.value);
+    }
+
     return {
       board,
+      reversed,
       newGame,
+      reverseBoard,
     };
   },
 };
@@ -44,6 +54,7 @@ export default {
 }
 
 .button {
+  margin: 0px 5px;
   border: 1px solid black;
 }
 </style>
