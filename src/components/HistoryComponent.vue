@@ -32,8 +32,6 @@ export default {
     font-family: 'Free Serif';
     font-size: 30px;
     background-color: beige;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
+    text-align: start;
 }
 </style>
