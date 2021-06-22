@@ -36,8 +36,12 @@ const CHESSBOARD_CB_DELAY_MS = 50;
 
 import "@loloof64/chessboard-component/dist";
 import { ref } from "vue";
+import { useI18n } from "vue-i18n";
 export default {
   setup() {
+
+    const {t} = useI18n();
+
     const board = ref();
     const reversed = ref(false);
 
@@ -50,24 +54,24 @@ export default {
     }
 
     function handleCheckmate({ whiteTurnBeforeMove }) {
-      const player = whiteTurnBeforeMove ? "White" : "Black";
-      setTimeout(() => alert(`${player} won by checkmate !`), CHESSBOARD_CB_DELAY_MS);
+      const player = whiteTurnBeforeMove ?  t("side.white") : t("side.black");
+      setTimeout(() => alert(t("gameFinished.checkmate", {player})), CHESSBOARD_CB_DELAY_MS);
     }
 
     function handleStalemate() {
-      setTimeout(() => alert('Draw by stalemate !'), CHESSBOARD_CB_DELAY_MS);
+      setTimeout(() => alert(t("gameFinished.stalemate")), CHESSBOARD_CB_DELAY_MS);
     }
 
     function handlePerpetualDraw() {
-      setTimeout(() => alert('Draw by three-fold repetition !'), CHESSBOARD_CB_DELAY_MS);
+      setTimeout(() => alert(t("gameFinished.checkmate")), CHESSBOARD_CB_DELAY_MS);
     }
 
     function handleMissingMaterialDraw() {
-      setTimeout(() => alert('Draw by missing material !'), CHESSBOARD_CB_DELAY_MS);
+      setTimeout(() => alert(t('gameFinished.three-fold-repetition')), CHESSBOARD_CB_DELAY_MS);
     }
 
     function handleFiftyMovesDraw() {
-      setTimeout(() => alert('Draw by the fifty moves rule !'), CHESSBOARD_CB_DELAY_MS);
+      setTimeout(() => alert(t('gameFinished.50-moves-rule')), CHESSBOARD_CB_DELAY_MS);
     }
 
     return {
