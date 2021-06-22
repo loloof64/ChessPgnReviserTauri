@@ -944,10 +944,10 @@
     cssnano-preset-default "^4.0.0"
     postcss "^7.0.0"
 
-"@loloof64/chessboard-component@^0.18.2":
-  version "0.18.2"
-  resolved "https://registry.yarnpkg.com/@loloof64/chessboard-component/-/chessboard-component-0.18.2.tgz#86911a273ee9bf2ca666ad9591ae5e0f72148f47"
-  integrity sha512-HTYqOF/dwt7oMt+h4vslCY+Yi+U6eqpRoMe8+5+0LgWJ6fVf+CsvNc5MgvAfRJpi48Ilnzj4KHr7PWCZNswIuw==
+"@loloof64/chessboard-component@^0.18.6":
+  version "0.18.6"
+  resolved "https://registry.yarnpkg.com/@loloof64/chessboard-component/-/chessboard-component-0.18.6.tgz#6ef5094c7983e1ddbb0b3000147b0b5b49983263"
+  integrity sha512-Xw/0reLQsTPmcuhLGhfNaO+u7uNIyhMeM69Y0ErViGZTC3Q3GBVq/n1FZWuwnpshL1OfbHY9HHuEMBRAfPwYQg==
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
@@ -1026,6 +1026,11 @@
   integrity sha512-PyRA9sm1Yayuj5OIoJ1hGt2YISX45w9WcFbh6ddT0Z/0yaFxOtGLInr4jUfU1EAFVs0Yfyfev4RNwBlUaHdlDQ==
   dependencies:
     defer-to-connect "^2.0.0"
+
+"@tauri-apps/api@^1.0.0-beta.1":
+  version "1.0.0-beta.1"
+  resolved "https://registry.yarnpkg.com/@tauri-apps/api/-/api-1.0.0-beta.1.tgz#5b3696235c841cfe68d31b65a61c381778e5c733"
+  integrity sha512-WX9Hqf6pXFfpURTdz9VbHctnh4gjsWZDj5tSWqV4mQ2T8TldVmOSKqHpPDcVFibeM1L6oXJfrSgqR68Ho4g3bQ==
 
 "@tauri-apps/cli@1.0.0-beta-rc.2":
   version "1.0.0-beta-rc.2"
