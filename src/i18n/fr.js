@@ -9,5 +9,8 @@ export default {
         "three-fold-repetition": "Nulle par triple répétition !",
         "missing-material": "Nulle par manque de matériel !",
         "50-moves-rule": "Nulle par la règle des 50 coups !",
+    },
+    "dialogs": {
+        "newGameConfirmation": "Souhaitez-vous arrêter la partie en cours et démarrer une nouvelle ?",
     }
 };

@@ -37,7 +37,12 @@
         @fifty-moves-draw="handleFiftyMovesDraw"
         @move-done="handleMoveDone"
       />
-      <history-component width="350px" height="350px" :items="historyItems" @position-request="handlePositionRequest"/>
+      <history-component
+        width="350px"
+        height="350px"
+        :items="historyItems"
+        @position-request="handlePositionRequest"
+      />
     </div>
   </div>
 </template>
@@ -58,7 +63,19 @@ export default {
     const reversed = ref(false);
     const historyItems = reactive([]);
 
-    function newGame() {
+    async function newGame() {
+      const boardNotStalled = board.value.getCurrentPosition() != '8/8/8/8/8/8/8/8 w - - 0 1';
+      if (boardNotStalled) {
+        const userConfirmed = await confirm(t("dialogs.newGameConfirmation"));
+        if (userConfirmed) {
+          doStartNewGame();
+        }
+      } else {
+        doStartNewGame();
+      }
+    }
+
+    function doStartNewGame() {
       historyItems.splice(0, historyItems.length);
       board.value.newGame();
     }

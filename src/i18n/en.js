@@ -9,5 +9,8 @@ export default {
         "three-fold-repetition": "Draw by three-fold repetition !",
         "missing-material": "Draw by missing material !",
         "50-moves-rule": "Draw by the fifty moves rule !",
+    },
+    "dialogs": {
+        "newGameConfirmation": "Do you want to stop current game and start a new one ?",
     }
 };
