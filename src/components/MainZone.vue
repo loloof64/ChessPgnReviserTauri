@@ -98,6 +98,9 @@ export default {
 
     function handleMoveDone(event) {
       const payload = event.detail.moveObject;
+      if ((payload.whiteTurn) ) {
+        historyItems.push({text: `${payload.moveNumber}.`});
+      }
       historyItems.push({text: payload.moveFan});
     }
 
