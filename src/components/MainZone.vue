@@ -5,7 +5,6 @@
       <img class="button" @click="reverseBoard" width="50" height="50" src="../assets/reverse.png" />
     </div>
   <loloof64-chessboard
-    v-pre
     ref="board"
     size="300"
     :reversed="reversed"
@@ -29,7 +28,6 @@ export default {
 
     const reverseBoard = function() {
       reversed.value = !reversed.value;
-      console.log(reversed.value);
     }
 
     return {
