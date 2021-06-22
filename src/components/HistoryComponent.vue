@@ -1,6 +1,8 @@
 <template>
     <div id="content" :style="rootStyle">
-        {{items.map((elt) => elt.text).join(' ')}}
+        <span v-for="(item, index) in items" :key="index" @click="handleItemClick(index)">
+            {{item.text + ' '}}
+        </span>
     </div>
 </template>
 
@@ -20,9 +22,17 @@ export default {
             required: true,
         },
     },
-    setup(props) {
+    setup(props, context) {
         const rootStyle = `width: ${props.width}; height: ${props.height}`;
-        return {rootStyle};
+
+        function handleItemClick(index) {
+            const item = props.items[index];
+
+            if (! item.positionFen) return;
+            context.emit('position-request', item);
+        }
+
+        return {rootStyle, handleItemClick};
     },
 }
 </script>

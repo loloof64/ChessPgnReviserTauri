@@ -15,6 +15,13 @@
         height="50"
         src="../assets/images/reverse.png"
       />
+      <img
+        class="button"
+        @click="stopGame"
+        width="50"
+        height="50"
+        src="../assets/images/stop.png"
+      />
     </div>
     <div id="game_zone">
       <loloof64-chessboard
@@ -30,7 +37,7 @@
         @fifty-moves-draw="handleFiftyMovesDraw"
         @move-done="handleMoveDone"
       />
-      <history-component width="350px" height="350px" :items="historyItems" />
+      <history-component width="350px" height="350px" :items="historyItems" @position-request="handlePositionRequest"/>
     </div>
   </div>
 </template>
@@ -98,10 +105,18 @@ export default {
 
     function handleMoveDone(event) {
       const payload = event.detail.moveObject;
-      if ((payload.whiteTurn) ) {
-        historyItems.push({text: `${payload.moveNumber}.`});
+      if (payload.whiteTurn) {
+        historyItems.push({ text: `${payload.moveNumber}.` });
       }
-      historyItems.push({text: payload.moveFan});
+      historyItems.push({ ...payload, text: payload.moveFan });
+    }
+
+    function handlePositionRequest(event) {
+      board.value.setPositionAndLastMove(event);
+    }
+
+    function stopGame() {
+      board.value.stop();
     }
 
     return {
@@ -109,6 +124,7 @@ export default {
       reversed,
       historyItems,
       newGame,
+      stopGame,
       reverseBoard,
       handleCheckmate,
       handleStalemate,
@@ -116,6 +132,7 @@ export default {
       handleMissingMaterialDraw,
       handleFiftyMovesDraw,
       handleMoveDone,
+      handlePositionRequest,
     };
   },
 };
