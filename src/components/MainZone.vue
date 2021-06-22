@@ -40,8 +40,7 @@
       <history-component
         ref="history"
         width="350px"
-        height="350px"
-        :items="historyItems"
+        height="320px"
         @position-request="handlePositionRequest"
       />
     </div>
@@ -53,7 +52,7 @@ const CHESSBOARD_CB_DELAY_MS = 50;
 
 import "@loloof64/chessboard-component/dist";
 import HistoryComponent from "./HistoryComponent.vue";
-import { ref, reactive } from "vue";
+import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 export default {
   components: { HistoryComponent },
@@ -63,7 +62,6 @@ export default {
     const board = ref();
     const history = ref();
     const reversed = ref(false);
-    const historyItems = reactive([]);
 
     async function newGame() {
       const boardStalled = board.value
@@ -80,7 +78,7 @@ export default {
     }
 
     function doStartNewGame() {
-      historyItems.splice(0, historyItems.length);
+      history.value.newGame();
       board.value.newGame();
     }
 
@@ -126,10 +124,7 @@ export default {
 
     function handleMoveDone(event) {
       const payload = event.detail.moveObject;
-      if (payload.whiteTurn) {
-        historyItems.push({ text: `${payload.moveNumber}.` });
-      }
-      historyItems.push({ ...payload, text: payload.moveFan });
+      history.value.addItem(payload);
     }
 
     function handlePositionRequest(event) {
@@ -151,7 +146,6 @@ export default {
       board,
       history,
       reversed,
-      historyItems,
       newGame,
       stopGame,
       reverseBoard,
