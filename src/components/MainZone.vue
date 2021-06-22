@@ -66,10 +66,10 @@ export default {
     const historyItems = reactive([]);
 
     async function newGame() {
-      const boardNotStalled = board.value
+      const boardStalled = board.value
         .getCurrentPosition()
         .startsWith("8/8/8/8/8/8/8/8 w - - 0 1");
-      if (boardNotStalled) {
+      if (!boardStalled) {
         const userConfirmed = await confirm(t("dialogs.newGameConfirmation"));
         if (userConfirmed) {
           doStartNewGame();
