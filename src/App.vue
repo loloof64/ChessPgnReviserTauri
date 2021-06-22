@@ -22,4 +22,10 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
+
+@font-face {
+  font-family: "Free Serif";
+  src: local("Free Serif"),
+   url(./assets/fonts/FreeSerif.ttf) format("truetype");
+}
 </style>

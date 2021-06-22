@@ -54,9 +54,9 @@
     "windows": [
       {
         "title": "Chess Pgn Reviser",
-        "width": 400,
-        "height": 500,
-        "resizable": true,
+        "width": 800,
+        "height": 600,
+        "resizable": false,
         "fullscreen": false
       }
     ],

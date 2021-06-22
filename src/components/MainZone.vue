@@ -1,33 +1,36 @@
 <template>
-  <div class="main_zone">
-    <div class="buttons_zone">
+  <div id="main_zone">
+    <div id="buttons_zone">
       <img
         class="button"
         @click="newGame"
         width="50"
         height="50"
-        src="../assets/start.png"
+        src="../assets/images/start.png"
       />
       <img
         class="button"
         @click="reverseBoard"
         width="50"
         height="50"
-        src="../assets/reverse.png"
+        src="../assets/images/reverse.png"
       />
     </div>
-    <loloof64-chessboard
-      ref="board"
-      size="300"
-      :reversed="reversed"
-      white_player_human="true"
-      black_player_human="true"
-      @checkmate="handleCheckmate"
-      @stalemate="handleStalemate"
-      @perpetual-draw="handlePerpetualDraw"
-      @missing-material-draw="handleMissingMaterialDraw"
-      @fifty-moves-draw="handleFiftyMovesDraw"
-    ></loloof64-chessboard>
+    <div id="game_zone">
+      <loloof64-chessboard
+        ref="board"
+        size="350"
+        :reversed="reversed"
+        white_player_human="true"
+        black_player_human="true"
+        @checkmate="handleCheckmate"
+        @stalemate="handleStalemate"
+        @perpetual-draw="handlePerpetualDraw"
+        @missing-material-draw="handleMissingMaterialDraw"
+        @fifty-moves-draw="handleFiftyMovesDraw"
+      />
+      <history-component width="350px" height="350px" :items="historyItems" />
+    </div>
   </div>
 </template>
 
@@ -35,15 +38,17 @@
 const CHESSBOARD_CB_DELAY_MS = 50;
 
 import "@loloof64/chessboard-component/dist";
-import { ref } from "vue";
+import HistoryComponent from "./HistoryComponent.vue";
+import { ref, reactive } from "vue";
 import { useI18n } from "vue-i18n";
 export default {
+  components: { HistoryComponent },
   setup() {
-
-    const {t} = useI18n();
+    const { t } = useI18n();
 
     const board = ref();
     const reversed = ref(false);
+    const historyItems = reactive(['1.', '\u265be5']);
 
     function newGame() {
       board.value.newGame();
@@ -54,29 +59,45 @@ export default {
     }
 
     function handleCheckmate({ whiteTurnBeforeMove }) {
-      const player = whiteTurnBeforeMove ?  t("side.white") : t("side.black");
-      setTimeout(() => alert(t("gameFinished.checkmate", {player})), CHESSBOARD_CB_DELAY_MS);
+      const player = whiteTurnBeforeMove ? t("side.white") : t("side.black");
+      setTimeout(
+        () => alert(t("gameFinished.checkmate", { player })),
+        CHESSBOARD_CB_DELAY_MS
+      );
     }
 
     function handleStalemate() {
-      setTimeout(() => alert(t("gameFinished.stalemate")), CHESSBOARD_CB_DELAY_MS);
+      setTimeout(
+        () => alert(t("gameFinished.stalemate")),
+        CHESSBOARD_CB_DELAY_MS
+      );
     }
 
     function handlePerpetualDraw() {
-      setTimeout(() => alert(t("gameFinished.checkmate")), CHESSBOARD_CB_DELAY_MS);
+      setTimeout(
+        () => alert(t("gameFinished.checkmate")),
+        CHESSBOARD_CB_DELAY_MS
+      );
     }
 
     function handleMissingMaterialDraw() {
-      setTimeout(() => alert(t('gameFinished.three-fold-repetition')), CHESSBOARD_CB_DELAY_MS);
+      setTimeout(
+        () => alert(t("gameFinished.three-fold-repetition")),
+        CHESSBOARD_CB_DELAY_MS
+      );
     }
 
     function handleFiftyMovesDraw() {
-      setTimeout(() => alert(t('gameFinished.50-moves-rule')), CHESSBOARD_CB_DELAY_MS);
+      setTimeout(
+        () => alert(t("gameFinished.50-moves-rule")),
+        CHESSBOARD_CB_DELAY_MS
+      );
     }
 
     return {
       board,
       reversed,
+      historyItems,
       newGame,
       reverseBoard,
       handleCheckmate,
@@ -90,18 +111,26 @@ export default {
 </script>
 
 <style scoped>
-.main_zone {
+#main_zone {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.buttons_zone {
+#buttons_zone {
   margin: 10px 0px;
 }
 
 .button {
   margin: 0px 5px;
   border: 1px solid black;
+}
+
+#game_zone {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-self: flex-start;
+  width: 780px;
 }
 </style>
