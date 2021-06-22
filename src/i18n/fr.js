@@ -12,5 +12,6 @@ export default {
     },
     "dialogs": {
         "newGameConfirmation": "Souhaitez-vous arrêter la partie en cours et démarrer une nouvelle ?",
+        "stopGameConfirmation": "Souhaitez-vous arrêter la partie en cours ?",
     }
 };
