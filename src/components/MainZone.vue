@@ -28,6 +28,7 @@
         @perpetual-draw="handlePerpetualDraw"
         @missing-material-draw="handleMissingMaterialDraw"
         @fifty-moves-draw="handleFiftyMovesDraw"
+        @move-done="handleMoveDone"
       />
       <history-component width="350px" height="350px" :items="historyItems" />
     </div>
@@ -48,9 +49,10 @@ export default {
 
     const board = ref();
     const reversed = ref(false);
-    const historyItems = reactive(['1.', '\u265be5']);
+    const historyItems = reactive([]);
 
     function newGame() {
+      historyItems.splice(0, historyItems.length);
       board.value.newGame();
     }
 
@@ -94,6 +96,11 @@ export default {
       );
     }
 
+    function handleMoveDone(event) {
+      const payload = event.detail.moveObject;
+      historyItems.push({text: payload.moveFan});
+    }
+
     return {
       board,
       reversed,
@@ -105,6 +112,7 @@ export default {
       handlePerpetualDraw,
       handleMissingMaterialDraw,
       handleFiftyMovesDraw,
+      handleMoveDone,
     };
   },
 };

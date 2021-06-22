@@ -1,6 +1,6 @@
 <template>
     <div id="content" :style="rootStyle">
-        {{items.join(' ')}}
+        {{items.map((elt) => elt.text).join(' ')}}
     </div>
 </template>
 
