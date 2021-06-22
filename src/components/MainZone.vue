@@ -38,6 +38,7 @@
         @move-done="handleMoveDone"
       />
       <history-component
+        ref="history"
         width="350px"
         height="350px"
         :items="historyItems"
@@ -60,11 +61,14 @@ export default {
     const { t } = useI18n();
 
     const board = ref();
+    const history = ref();
     const reversed = ref(false);
     const historyItems = reactive([]);
 
     async function newGame() {
-      const boardNotStalled = board.value.getCurrentPosition().startsWith('8/8/8/8/8/8/8/8 w - - 0 1');
+      const boardNotStalled = board.value
+        .getCurrentPosition()
+        .startsWith("8/8/8/8/8/8/8/8 w - - 0 1");
       if (boardNotStalled) {
         const userConfirmed = await confirm(t("dialogs.newGameConfirmation"));
         if (userConfirmed) {
@@ -129,12 +133,15 @@ export default {
     }
 
     function handlePositionRequest(event) {
-      board.value.setPositionAndLastMove(event);
+      const success = board.value.setPositionAndLastMove(event);
+      if (success) {
+        history.value.notifyNodeSelected(event.index);
+      }
     }
 
     async function stopGame() {
       if (!board.value.gameIsInProgress()) return;
-      const confirmed = await confirm(t('dialogs.stopGameConfirmation'));
+      const confirmed = await confirm(t("dialogs.stopGameConfirmation"));
       if (confirmed) {
         board.value.stop();
       }
@@ -142,6 +149,7 @@ export default {
 
     return {
       board,
+      history,
       reversed,
       historyItems,
       newGame,
