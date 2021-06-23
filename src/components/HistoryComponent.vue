@@ -62,6 +62,7 @@ export default {
 
     function newGame() {
       items.value.splice(0, items.value.length);
+      selectedNodeIndex.value = undefined;
     }
 
     function addItem(itemData) {
@@ -75,13 +76,60 @@ export default {
       selectedNodeIndex.value = index;
     }
 
-    function handleGotoFirst() {}
+    function handleGotoFirst() {
+      context.emit("position-request", {});
+    }
 
-    function handleGotoPrevious() {}
+    function handleGotoPrevious() {
+      // We don't want to update selected node until confirmation from board.
+      let tempNodeIndex = selectedNodeIndex.value;
 
-    function handleGotoNext() {}
+      // we are on start position
+      if (tempNodeIndex === 1) {
+        // Goto first
+        context.emit("position-request", {});
+      } else if (tempNodeIndex > 0) {
+        do {
+          tempNodeIndex--;
+        } while (!items.value[tempNodeIndex].positionFen);
+        const item = items.value[tempNodeIndex];
+        context.emit("position-request", { ...item, index: tempNodeIndex });
+      }
+    }
 
-    function handleGotoLast() {}
+    function handleGotoNext() {
+      // We don't want to update selected node until confirmation from board.
+      let tempNodeIndex = selectedNodeIndex.value;
+
+      // if on start position
+      if (tempNodeIndex === undefined || tempNodeIndex < 1) {
+        // we skip move number
+        tempNodeIndex = 1;
+
+        const item = items.value[tempNodeIndex];
+        context.emit("position-request", { ...item, index: tempNodeIndex });
+      } else {
+        do {
+          if (tempNodeIndex >= items.value.length - 1) break;
+          tempNodeIndex++;
+        } while (!items.value[tempNodeIndex].positionFen);
+        const item = items.value[tempNodeIndex];
+
+        context.emit("position-request", {
+          ...item,
+          index: tempNodeIndex,
+        });
+      }
+    }
+
+    function handleGotoLast() {
+      const tempNodeIndex = items.value.length - 1;
+      const item = items.value[tempNodeIndex];
+      context.emit("position-request", {
+        ...item,
+        index: tempNodeIndex,
+      });
+    }
 
     return {
       items,

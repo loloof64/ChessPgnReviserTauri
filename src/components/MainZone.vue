@@ -78,8 +78,9 @@ export default {
     }
 
     function doStartNewGame() {
-      history.value.newGame();
-      board.value.newGame();
+      const startPosition = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+      history.value.newGame(startPosition);
+      board.value.newGame(startPosition);
     }
 
     function reverseBoard() {
