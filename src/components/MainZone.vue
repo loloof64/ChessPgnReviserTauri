@@ -26,7 +26,7 @@
     <div id="game_zone">
       <loloof64-chessboard
         ref="board"
-        size="350"
+        size="400"
         :reversed="reversed"
         white_player_human="true"
         black_player_human="true"
@@ -39,8 +39,8 @@
       />
       <history-component
         ref="history"
-        width="350px"
-        height="320px"
+        width="400px"
+        height="370px"
         @position-request="handlePositionRequest"
       />
     </div>
@@ -183,6 +183,6 @@ export default {
   flex-direction: row;
   justify-content: space-evenly;
   align-self: flex-start;
-  width: 780px;
+  width: 850px;
 }
 </style>

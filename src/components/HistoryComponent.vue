@@ -175,6 +175,7 @@ export default {
   font-size: 30px;
   background-color: beige;
   text-align: start;
+  overflow-y: scroll;
 }
 
 .selectedNode {
