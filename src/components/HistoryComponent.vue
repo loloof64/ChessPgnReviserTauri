@@ -71,6 +71,7 @@ export default {
         items.value.push({ text: `${itemData.moveNumber}.` });
       }
       items.value.push({ ...itemData, text: itemData.moveFan });
+      setTimeout(scrollToBottom, 15);
     }
 
     function notifyNodeSelected(index) {
@@ -78,6 +79,13 @@ export default {
       const itemDom = document.querySelector('#item_'+index);
       const contentDom = document.querySelector('#content');
       if (itemDom) contentDom.scrollTo({top: itemDom.offsetTop - contentDom.offsetTop});
+    }
+
+    function scrollToBottom() {
+      const contentDom = document.querySelector('#content');
+      const lastIndex = items.value.length - 1;
+      const lastItemDom = document.querySelector('#item_'+lastIndex);
+      if (lastItemDom) contentDom.scrollTo({top: lastItemDom.offsetTop - contentDom.offsetTop});
     }
 
     function handleGotoFirst() {
