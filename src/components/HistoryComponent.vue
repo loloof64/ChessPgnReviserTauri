@@ -25,6 +25,7 @@
     <div id="content" :style="rootStyle">
       <span
         v-for="(item, index) in items"
+        :id="'item_' + index"
         :key="index"
         :class="{ selectedNode: index === selectedNodeIndex }"
         @click="handleItemClick(index)"
@@ -74,6 +75,9 @@ export default {
 
     function notifyNodeSelected(index) {
       selectedNodeIndex.value = index;
+      const itemDom = document.querySelector('#item_'+index);
+      const contentDom = document.querySelector('#content');
+      if (itemDom) contentDom.scrollTo({top: itemDom.offsetTop - contentDom.offsetTop});
     }
 
     function handleGotoFirst() {
