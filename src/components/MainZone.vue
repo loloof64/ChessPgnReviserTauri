@@ -78,7 +78,8 @@ export default {
     }
 
     function doStartNewGame() {
-      const startPosition = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+      const startPosition =
+        "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
       history.value.newGame(startPosition);
       board.value.newGame(startPosition);
     }
@@ -89,38 +90,38 @@ export default {
 
     function handleCheckmate({ whiteTurnBeforeMove }) {
       const player = whiteTurnBeforeMove ? t("side.white") : t("side.black");
-      setTimeout(
-        () => alert(t("gameFinished.checkmate", { player })),
-        CHESSBOARD_CB_DELAY_MS
-      );
+      setTimeout(() => {
+        history.value.gotoLast();
+        alert(t("gameFinished.checkmate", { player }));
+      }, CHESSBOARD_CB_DELAY_MS);
     }
 
     function handleStalemate() {
-      setTimeout(
-        () => alert(t("gameFinished.stalemate")),
-        CHESSBOARD_CB_DELAY_MS
-      );
+      setTimeout(() => {
+        history.value.gotoLast();
+        alert(t("gameFinished.stalemate"));
+      }, CHESSBOARD_CB_DELAY_MS);
     }
 
     function handlePerpetualDraw() {
-      setTimeout(
-        () => alert(t("gameFinished.checkmate")),
-        CHESSBOARD_CB_DELAY_MS
-      );
+      setTimeout(() => {
+        history.value.gotoLast();
+        alert(t("gameFinished.checkmate"));
+      }, CHESSBOARD_CB_DELAY_MS);
     }
 
     function handleMissingMaterialDraw() {
-      setTimeout(
-        () => alert(t("gameFinished.three-fold-repetition")),
-        CHESSBOARD_CB_DELAY_MS
-      );
+      setTimeout(() => {
+        history.value.gotoLast();
+        alert(t("gameFinished.three-fold-repetition"));
+      }, CHESSBOARD_CB_DELAY_MS);
     }
 
     function handleFiftyMovesDraw() {
-      setTimeout(
-        () => alert(t("gameFinished.50-moves-rule")),
-        CHESSBOARD_CB_DELAY_MS
-      );
+      setTimeout(() => {
+        history.value.gotoLast();
+        alert(t("gameFinished.50-moves-rule"));
+      }, CHESSBOARD_CB_DELAY_MS);
     }
 
     function handleMoveDone(event) {
@@ -140,6 +141,7 @@ export default {
       const confirmed = await confirm(t("dialogs.stopGameConfirmation"));
       if (confirmed) {
         board.value.stop();
+        history.value.gotoLast();
       }
     }
 

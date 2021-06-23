@@ -4,22 +4,22 @@
       <img
         class="button"
         src="../assets/images/first_item.png"
-        @click="handleGotoFirst"
+        @click="gotoFirst"
       />
       <img
         class="button"
         src="../assets/images/previous_item.png"
-        @click="handleGotoPrevious"
+        @click="gotoPrevious"
       />
       <img
         class="button"
         src="../assets/images/next_item.png"
-        @click="handleGotoNext"
+        @click="gotoNext"
       />
       <img
         class="button"
         src="../assets/images/last_item.png"
-        @click="handleGotoLast"
+        @click="gotoLast"
       />
     </div>
     <div id="content" :style="rootStyle">
@@ -88,11 +88,11 @@ export default {
       if (lastItemDom) contentDom.scrollTo({top: lastItemDom.offsetTop - contentDom.offsetTop});
     }
 
-    function handleGotoFirst() {
+    function gotoFirst() {
       context.emit("position-request", {});
     }
 
-    function handleGotoPrevious() {
+    function gotoPrevious() {
       // We don't want to update selected node until confirmation from board.
       let tempNodeIndex = selectedNodeIndex.value;
 
@@ -109,7 +109,7 @@ export default {
       }
     }
 
-    function handleGotoNext() {
+    function gotoNext() {
       // We don't want to update selected node until confirmation from board.
       let tempNodeIndex = selectedNodeIndex.value;
 
@@ -134,7 +134,7 @@ export default {
       }
     }
 
-    function handleGotoLast() {
+    function gotoLast() {
       const tempNodeIndex = items.value.length - 1;
       const item = items.value[tempNodeIndex];
       context.emit("position-request", {
@@ -149,10 +149,10 @@ export default {
       selectedNodeIndex,
       handleItemClick,
       notifyNodeSelected,
-      handleGotoFirst,
-      handleGotoPrevious,
-      handleGotoNext,
-      handleGotoLast,
+      gotoFirst,
+      gotoPrevious,
+      gotoNext,
+      gotoLast,
       newGame,
       addItem,
     };
