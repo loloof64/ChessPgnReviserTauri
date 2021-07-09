@@ -54,6 +54,7 @@ import "@loloof64/chessboard-component/dist";
 import HistoryComponent from "./HistoryComponent.vue";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
+import { open } from "@tauri-apps/api/dialog";
 export default {
   components: { HistoryComponent },
   setup() {
@@ -77,7 +78,16 @@ export default {
       }
     }
 
-    function doStartNewGame() {
+    async function doStartNewGame() {
+      const selectedFile = await open({
+        directory: false,
+        multiple: false,
+        filters: [{ name: "Pgn file (*.pgn)", extensions: ["pgn"] }],
+      });
+      if (!selectedFile) {
+        alert(t('dialogs.cancelledNewGame'));
+        return;
+      }
       const startPosition =
         "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
       history.value.newGame(startPosition);

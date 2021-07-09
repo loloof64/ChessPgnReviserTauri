@@ -13,5 +13,6 @@ export default {
     "dialogs": {
         "newGameConfirmation": "Do you want to stop current game and start a new one ?",
         "stopGameConfirmation": "Do you want to stop current game ?",
+        "cancelledNewGame": "Cancelled new game.",
     }
 };
