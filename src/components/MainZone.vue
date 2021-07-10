@@ -15,13 +15,6 @@
         height="50"
         src="../assets/images/reverse.png"
       />
-      <img
-        class="button"
-        @click="stopGame"
-        width="50"
-        height="50"
-        src="../assets/images/stop.png"
-      />
     </div>
     <div id="game_zone">
       <loloof64-chessboard
@@ -269,21 +262,11 @@ export default {
       }
     }
 
-    async function stopGame() {
-      if (!board.value.gameIsInProgress()) return;
-      const confirmed = await confirm(t("dialogs.stopGameConfirmation"));
-      if (confirmed) {
-        board.value.stop();
-        history.value.gotoLast();
-      }
-    }
-
     return {
       board,
       history,
       reversed,
       newGame,
-      stopGame,
       reverseBoard,
       handleCheckmate,
       handleStalemate,
