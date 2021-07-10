@@ -13,6 +13,9 @@ export default {
     "dialogs": {
         "newGameConfirmation": "Souhaitez-vous arrêter la partie en cours et démarrer une nouvelle ?",
         "stopGameConfirmation": "Souhaitez-vous arrêter la partie en cours ?",
-        "cancelledNewGame": "Annulation de nouvelle partie.",
+        "cancelledNewGame": "Annulation de la nouvelle partie.",
+        "newGameError": "Une erreur est survenue: annulation de la nouvelle partie.",
+        "gameWon": "Vous avez deviné l'ensemble de la partie.",
+        "gameLost": "Vous vous êtes trompé de coup\nLigne principale: {mainMove}\nVariantes: {variations}",
     }
 };

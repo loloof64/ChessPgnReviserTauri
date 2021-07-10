@@ -28,8 +28,8 @@
         ref="board"
         size="400"
         :reversed="reversed"
-        white_player_human="true"
-        black_player_human="true"
+        :white_player_human="whiteHuman"
+        :black_player_human="blackHuman"
         @checkmate="handleCheckmate"
         @stalemate="handleStalemate"
         @perpetual-draw="handlePerpetualDraw"
@@ -51,10 +51,12 @@
 const CHESSBOARD_CB_DELAY_MS = 50;
 
 import "@loloof64/chessboard-component/dist";
+import parser from "@mliebelt/pgn-parser";
 import HistoryComponent from "./HistoryComponent.vue";
-import { ref } from "vue";
+import { ref, reactive } from "vue";
 import { useI18n } from "vue-i18n";
 import { open } from "@tauri-apps/api/dialog";
+import { readTextFile } from "@tauri-apps/api/fs";
 export default {
   components: { HistoryComponent },
   setup() {
@@ -63,6 +65,13 @@ export default {
     const board = ref();
     const history = ref();
     const reversed = ref(false);
+    const whiteHuman = ref(true);
+    const blackHuman = ref(true);
+    let expectedMoves = reactive([]);
+    const nextHalfMoveSan = ref("");
+    let nextHalfMoveVariationsSans = reactive([]);
+    const nodeIndex = ref(0);
+    let currentNode = reactive({});
 
     async function newGame() {
       const boardStalled = board.value
@@ -79,19 +88,39 @@ export default {
     }
 
     async function doStartNewGame() {
-      const selectedFile = await open({
-        directory: false,
-        multiple: false,
-        filters: [{ name: "Pgn file (*.pgn)", extensions: ["pgn"] }],
-      });
-      if (!selectedFile) {
-        alert(t('dialogs.cancelledNewGame'));
-        return;
+      try {
+        const selectedFile = await open({
+          directory: false,
+          multiple: false,
+          filters: [{ name: "Pgn file (*.pgn)", extensions: ["pgn"] }],
+        });
+        if (!selectedFile) {
+          alert(t("dialogs.cancelledNewGame"));
+          return;
+        }
+        const fileContent = await readTextFile(selectedFile, {});
+        const parsedGames = parser.parse(fileContent, { startRule: "games" });
+        const selectedGameIndex = 0;
+        const selectedGame = parsedGames[selectedGameIndex];
+        const startPosition =
+          selectedGame.tags["FEN"] ||
+          "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+        expectedMoves = selectedGame.moves;
+        currentNode = expectedMoves;
+        nodeIndex.value = 0;
+        nextHalfMoveSan.value =
+          expectedMoves[nodeIndex.value].notation.notation;
+        nextHalfMoveVariationsSans = expectedMoves[
+          nodeIndex.value
+        ].variations.map((elt) => elt[0].notation.notation);
+        whiteHuman.value = true;
+        blackHuman.value = true;
+        history.value.newGame(startPosition);
+        board.value.newGame(startPosition);
+      } catch (err) {
+        console.error(err);
+        alert(t("dialogs.newGameError"));
       }
-      const startPosition =
-        "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-      history.value.newGame(startPosition);
-      board.value.newGame(startPosition);
     }
 
     function reverseBoard() {
@@ -134,9 +163,103 @@ export default {
       }, CHESSBOARD_CB_DELAY_MS);
     }
 
+    function checkMainMoveCorrectness(moveObject) {
+      const moveSan = moveObject.moveSan;
+      return moveSan === nextHalfMoveSan.value;
+    }
+
+    function getVariationMoveIndex(moveObject) {
+      const moveSan = moveObject.moveSan;
+      return nextHalfMoveVariationsSans.findIndex((item) => item === moveSan);
+    }
+
+    function advanceNode() {
+      nextHalfMoveSan.value = currentNode[nodeIndex.value].notation.notation;
+      nextHalfMoveVariationsSans = currentNode[nodeIndex.value].variations.map(
+        (elt) => elt[0].notation.notation
+      );
+    }
+
+    function handleGameWon() {
+      board.value.stop();
+      history.value.gotoLast();
+      alert(t("dialogs.gameWon"));
+    }
+
+    function moveSanToMoveFan(moveSan, whiteTurn) {
+      const charset = "nbrqkNBRQK";
+      const firstPieceCharIndex = moveSan
+        .split("")
+        .findIndex((elt) => charset.includes(elt));
+      if (firstPieceCharIndex < 0) return moveSan;
+
+      const firstPieceChar = moveSan.charAt(firstPieceCharIndex);
+      const firstPart = moveSan.substring(0, firstPieceCharIndex);
+      const lastPart = moveSan.substring(firstPieceCharIndex + 1);
+
+      let middlePart;
+      switch (firstPieceChar) {
+        case "N":
+          middlePart = whiteTurn ? "\u2658" : "\u265e";
+          break;
+        case "B":
+          middlePart = whiteTurn ? "\u2657" : "\u265d";
+          break;
+        case "R":
+          middlePart = whiteTurn ? "\u2656" : "\u265c";
+          break;
+        case "Q":
+          middlePart = whiteTurn ? "\u2655" : "\u265b";
+          break;
+        case "K":
+          middlePart = whiteTurn ? "\u2654" : "\u265a";
+          break;
+      }
+
+      return `${firstPart}${middlePart}${lastPart}`;
+    }
+
     function handleMoveDone(event) {
       const payload = event.detail.moveObject;
-      history.value.addItem(payload);
+      const isExpectecMainMove = checkMainMoveCorrectness(payload);
+      const expectedVariationMoveIndex = getVariationMoveIndex(payload);
+      if (isExpectecMainMove) {
+        nodeIndex.value++;
+        if (nodeIndex.value < currentNode.length - 1) {
+          advanceNode();
+        } else {
+          handleGameWon();
+        }
+        history.value.addItem(payload);
+      } else if (expectedVariationMoveIndex >= 0) {
+        currentNode =
+          currentNode[nodeIndex.value].variations[expectedVariationMoveIndex];
+        nodeIndex.value = 1;
+        if (nodeIndex.value < currentNode.length || 0) {
+          advanceNode();
+        } else {
+          handleGameWon();
+        }
+        history.value.addItem(payload);
+      } else {
+        const moveFan = moveSanToMoveFan(
+          nextHalfMoveSan.value,
+          !board.value.isWhiteTurn()
+        );
+        const variationsFans = nextHalfMoveVariationsSans.map((elt) =>
+          moveSanToMoveFan(elt, !board.value.isWhiteTurn())
+        );
+        history.value.addItem(payload);
+        board.value.stop();
+        history.value.gotoLast();
+        alert(
+          t("dialogs.gameLost", {
+            mainMove: moveFan,
+            variations: variationsFans.join(" | "),
+          })
+        );
+        return;
+      }
     }
 
     function handlePositionRequest(event) {
@@ -169,6 +292,8 @@ export default {
       handleFiftyMovesDraw,
       handleMoveDone,
       handlePositionRequest,
+      whiteHuman,
+      blackHuman,
     };
   },
 };

@@ -14,5 +14,8 @@ export default {
         "newGameConfirmation": "Do you want to stop current game and start a new one ?",
         "stopGameConfirmation": "Do you want to stop current game ?",
         "cancelledNewGame": "Cancelled new game.",
+        "newGameError": "An error occured : cancelled new game.",
+        "gameWon": "You've guessed all the game.",
+        "gameLost": "You made a wrong move\nMain line: {mainMove}\nVariations: {variations}",
     }
 };

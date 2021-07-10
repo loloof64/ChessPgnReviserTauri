@@ -14,5 +14,8 @@ export default {
         "newGameConfirmation": "¿Quieres detener el juego actual y comenzar uno nuevo?",
         "stopGameConfirmation": "¿Quieres detener el juego actual?",
         "cancelledNewGame": "Nuevo juego cancelado.",
+        "newGameError": "Ocurrió un error: nuevo juego cancelado.",
+        "gameWon": "Has adivinado todo el juego.",
+        "gameLost": "Hiciste un movimiento en falso\nLínea principal: {mainMove}\nVariaciones: {variations}",
     }
 };
