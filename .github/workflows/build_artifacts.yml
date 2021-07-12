@@ -41,8 +41,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: app-v${{ env.PACKAGE_VERSION }}
-        release_name: "Desktop app v${{ env.PACKAGE_VERSION }}"
-        body: ${{ env.RELEASE_MESSAGE }}
-        draft: false
+        tagName: app-v${{ env.PACKAGE_VERSION }}
+        releaseName: "Desktop app v${{ env.PACKAGE_VERSION }}"
+        releaseBody: ${{ env.RELEASE_MESSAGE }}
+        releaseDraft: false
         prerelease: false
