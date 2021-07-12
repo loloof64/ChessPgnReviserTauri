@@ -15,6 +15,9 @@ jobs:
     runs-on:  ${{ matrix.platform }}
     steps:
     - uses: actions/checkout@v2
+    - uses: Swatinem/rust-cache@v1
+      with:
+        working-directory: src-tauri
     - name: setup node
       uses: actions/setup-node@v1
       with:
@@ -38,6 +41,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
+        distPath: 'dist'
         tagName: app-v${{ env.PACKAGE_VERSION }}
         releaseName: "Desktop app v${{ env.PACKAGE_VERSION }}"
         releaseBody: ${{ env.RELEASE_MESSAGE }}
