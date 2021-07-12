@@ -23,7 +23,7 @@ jobs:
       with:
         node-version: 12
     - name: get version
-        run: echo "PACKAGE_VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
+      run: echo "PACKAGE_VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
     - name: get release message
       run: echo "RELEASE_MESSAGE=$(node -p "require('./package.json').release_message")" >> $GITHUB_ENV
     - name: install Rust stable
