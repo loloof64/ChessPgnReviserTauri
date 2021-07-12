@@ -3,6 +3,7 @@
 }
 
 .p-dialog-content {
+  white-space: pre-wrap;
   border-radius: 1vw;
   padding: 2vw;
   font-family: "Free Serif";
