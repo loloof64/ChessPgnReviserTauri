@@ -1,0 +1,22 @@
+.p-dialog-mask {
+  background-color: #00000082;
+}
+
+.p-dialog-content {
+  border-radius: 1vw;
+  padding: 2vw;
+  font-family: "Free Serif";
+  font-size: 30px;
+  background-color: beige;
+}
+
+.confirm-button,
+.ok-button {
+  color: white;
+  background-color: green;
+}
+
+.cancel-button {
+  color: white;
+  background-color: red;
+}

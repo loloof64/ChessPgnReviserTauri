@@ -4,6 +4,7 @@
 
 <script>
 import MainZone from './components/MainZone.vue'
+import './App.css';
 
 export default {
   name: 'App',
@@ -14,6 +15,7 @@ export default {
 </script>
 
 <style>
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

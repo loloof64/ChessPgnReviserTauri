@@ -11,6 +11,9 @@ export default {
         "50-moves-rule": "Draw by the fifty moves rule !",
     },
     "dialogs": {
+        "okButton": "OK",
+        "confirmButton": "Confirm",
+        "cancelButton": "Cancel",
         "newGameConfirmation": "Do you want to stop current game and start a new one ?",
         "stopGameConfirmation": "Do you want to stop current game ?",
         "cancelledNewGame": "Cancelled new game.",

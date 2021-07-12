@@ -23,11 +23,6 @@
         :reversed="reversed"
         :white_player_human="whiteHuman"
         :black_player_human="blackHuman"
-        @checkmate="handleCheckmate"
-        @stalemate="handleStalemate"
-        @perpetual-draw="handlePerpetualDraw"
-        @missing-material-draw="handleMissingMaterialDraw"
-        @fifty-moves-draw="handleFiftyMovesDraw"
         @move-done="handleMoveDone"
       />
       <history-component
@@ -37,12 +32,29 @@
         @position-request="handlePositionRequest"
       />
     </div>
+    <Dialog class="dialog" v-model:visible="alertDialogVisible" closeable="false" :modal="true">
+      <p class="dialog-content">
+      {{alertDialogContent}}
+      </p>
+
+      <template #footer>
+        <Button class="ok-button" :label="okButton" @click="handleAlertClose" />
+      </template>
+    </Dialog>
+    <Dialog class="dialog" v-model:visible="confirmDialogVisible" closeable="false" :modal="true">
+      <p class="dialog-content">
+      {{confirmDialogContent}}
+      </p>
+
+      <template #footer>
+        <Button class="cancel-button" :label="cancelButton" @click="handleCancel" />
+        <Button class="confirm-button" :label="confirmButton" @click="handleConfirm" />
+      </template>
+    </Dialog>
   </div>
 </template>
 
 <script>
-const CHESSBOARD_CB_DELAY_MS = 50;
-
 import "@loloof64/chessboard-component/dist";
 import parser from "@mliebelt/pgn-parser";
 import HistoryComponent from "./HistoryComponent.vue";
@@ -66,18 +78,49 @@ export default {
     const nodeIndex = ref(0);
     let currentNode = reactive({});
 
-    async function newGame() {
+    const alertDialogVisible = ref(false);
+    const alertDialogContent = ref("");
+    const confirmDialogVisible = ref(false);
+    const confirmDialogContent = ref("");
+    const okButton = ref(t("dialogs.okButton"));
+    const confirmButton = ref(t("dialogs.confirmButton"));
+    const cancelButton = ref(t("dialogs.cancelButton"));
+
+    const onConfirmHandler = ref(() => {});
+
+    function newGame() {
       const boardStalled = board.value
         .getCurrentPosition()
         .startsWith("8/8/8/8/8/8/8/8 w - - 0 1");
       if (!boardStalled) {
-        const userConfirmed = await confirm(t("dialogs.newGameConfirmation"));
-        if (userConfirmed) {
-          doStartNewGame();
-        }
+        showConfirm(t("dialogs.newGameConfirmation"), doStartNewGame);
       } else {
         doStartNewGame();
       }
+    }
+
+    function handleConfirm() {
+      onConfirmHandler.value();
+      confirmDialogVisible.value = false;
+    }
+
+    function handleCancel() {
+      confirmDialogVisible.value = false;
+    }
+
+    function handleAlertClose() {
+      alertDialogVisible.value = false;
+    }
+
+    function showAlert(message) {
+      alertDialogContent.value = message;
+      alertDialogVisible.value = true;
+    }
+
+    function showConfirm(message, onConfirm) {
+      confirmDialogContent.value = message;
+      onConfirmHandler.value = onConfirm;
+      confirmDialogVisible.value = true;
     }
 
     async function doStartNewGame() {
@@ -88,7 +131,7 @@ export default {
           filters: [{ name: "Pgn file (*.pgn)", extensions: ["pgn"] }],
         });
         if (!selectedFile) {
-          alert(t("dialogs.cancelledNewGame"));
+          showAlert(t("dialogs.cancelledNewGame"));
           return;
         }
         const fileContent = await readTextFile(selectedFile, {});
@@ -112,48 +155,12 @@ export default {
         board.value.newGame(startPosition);
       } catch (err) {
         console.error(err);
-        alert(t("dialogs.newGameError"));
+        showAlert(t("dialogs.newGameError"));
       }
     }
 
     function reverseBoard() {
       reversed.value = !reversed.value;
-    }
-
-    function handleCheckmate({ whiteTurnBeforeMove }) {
-      const player = whiteTurnBeforeMove ? t("side.white") : t("side.black");
-      setTimeout(() => {
-        history.value.gotoLast();
-        alert(t("gameFinished.checkmate", { player }));
-      }, CHESSBOARD_CB_DELAY_MS);
-    }
-
-    function handleStalemate() {
-      setTimeout(() => {
-        history.value.gotoLast();
-        alert(t("gameFinished.stalemate"));
-      }, CHESSBOARD_CB_DELAY_MS);
-    }
-
-    function handlePerpetualDraw() {
-      setTimeout(() => {
-        history.value.gotoLast();
-        alert(t("gameFinished.checkmate"));
-      }, CHESSBOARD_CB_DELAY_MS);
-    }
-
-    function handleMissingMaterialDraw() {
-      setTimeout(() => {
-        history.value.gotoLast();
-        alert(t("gameFinished.three-fold-repetition"));
-      }, CHESSBOARD_CB_DELAY_MS);
-    }
-
-    function handleFiftyMovesDraw() {
-      setTimeout(() => {
-        history.value.gotoLast();
-        alert(t("gameFinished.50-moves-rule"));
-      }, CHESSBOARD_CB_DELAY_MS);
     }
 
     function checkMainMoveCorrectness(moveObject) {
@@ -176,7 +183,7 @@ export default {
     function handleGameWon() {
       board.value.stop();
       history.value.gotoLast();
-      alert(t("dialogs.gameWon"));
+      showAlert(t("dialogs.gameWon"));
     }
 
     function moveSanToMoveFan(moveSan, whiteTurn) {
@@ -245,7 +252,7 @@ export default {
         history.value.addItem(payload);
         board.value.stop();
         history.value.gotoLast();
-        alert(
+        showAlert(
           t("dialogs.gameLost", {
             mainMove: moveFan,
             variations: variationsFans.join(" | "),
@@ -268,15 +275,20 @@ export default {
       reversed,
       newGame,
       reverseBoard,
-      handleCheckmate,
-      handleStalemate,
-      handlePerpetualDraw,
-      handleMissingMaterialDraw,
-      handleFiftyMovesDraw,
       handleMoveDone,
       handlePositionRequest,
       whiteHuman,
       blackHuman,
+      alertDialogVisible,
+      alertDialogContent,
+      confirmDialogVisible,
+      confirmDialogContent,
+      okButton,
+      confirmButton,
+      cancelButton,
+      handleConfirm,
+      handleCancel,
+      handleAlertClose,
     };
   },
 };

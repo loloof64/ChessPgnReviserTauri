@@ -11,6 +11,9 @@ export default {
         "50-moves-rule": "Igualdad por la regla de los 50 golpes !",
     },
     "dialogs": {
+        "okButton": "OK",
+        "confirmButton": "Confirmar",
+        "cancelButton": "Cancelar",
         "newGameConfirmation": "¿Quieres detener el juego actual y comenzar uno nuevo?",
         "stopGameConfirmation": "¿Quieres detener el juego actual?",
         "cancelledNewGame": "Nuevo juego cancelado.",

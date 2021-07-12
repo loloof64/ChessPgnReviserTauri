@@ -11,6 +11,9 @@ export default {
         "50-moves-rule": "Nulle par la règle des 50 coups !",
     },
     "dialogs": {
+        "okButton": "OK",
+        "confirmButton": "Confirmer",
+        "cancelButton": "Annuler",
         "newGameConfirmation": "Souhaitez-vous arrêter la partie en cours et démarrer une nouvelle ?",
         "stopGameConfirmation": "Souhaitez-vous arrêter la partie en cours ?",
         "cancelledNewGame": "Annulation de la nouvelle partie.",
