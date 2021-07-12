@@ -27,7 +27,7 @@ jobs:
     - name: get release message
       run: echo "RELEASE_MESSAGE=$(node -p "require('./package.json').release_message")" >> $GITHUB_ENV
     - name: install Rust stable
-    - uses: actions-rs/toolchain@v1
+      uses: actions-rs/toolchain@v1
       with:
         toolchain: stable
     - name: install webkit2gtk (ubuntu only)
