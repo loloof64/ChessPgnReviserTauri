@@ -1,6 +1,6 @@
 {
   "name": "chess-pgn-reviser",
-  "version": "0.2.10",
+  "version": "0.2.12",
   "private": true,
   "release_message": "Packaging for Ubuntu >= 20",
   "scripts": {
