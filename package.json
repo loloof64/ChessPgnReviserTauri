@@ -1,8 +1,8 @@
 {
   "name": "chess-pgn-reviser",
-  "version": "0.2.4",
+  "version": "0.2.6",
   "private": true,
-  "release_message": "User can load a game and try to guess moves. (Fix previous artifact)",
+  "release_message": "Debugging release version",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
