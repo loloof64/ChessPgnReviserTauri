@@ -6,13 +6,46 @@ on:
   push:
     branches: [ main ]
 
+  # Allows to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
 jobs:
-  publish-tauri:
+  create-release:
     strategy:
         fail-fast: true
-        matrix:
-          platform: [macos-latest, ubuntu-18.04, windows-latest]
-    runs-on:  ${{ matrix.platform }}
+    runs-on:  ubuntu-latest
+    outputs:
+      RELEASE_UPLOAD_ID: ${{ steps.create_release.outputs.id }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - name: get version
+        run: echo "PACKAGE_VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
+      - name: get release message
+        run: echo "RELEASE_MESSAGE=$(node -p "require('./package.json').release_message")" >> $GITHUB_ENV
+      - name: create release
+        id: create_release
+        uses: actions/create-release@v1.1.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: app-v${{ env.PACKAGE_VERSION }}
+          release_name: "Desktop app v${{ env.PACKAGE_VERSION }}"
+          body: ${{ env.RELEASE_MESSAGE }}
+          draft: false
+          prerelease: false
+  build-tauri:
+    needs: create-release
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [macos-latest, ubuntu-18.04, windows-latest]
+
+    runs-on: ${{ matrix.platform }}
     steps:
     - uses: actions/checkout@v2
     - uses: Swatinem/rust-cache@v1
@@ -22,14 +55,12 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 12
-    - name: get version
-      run: echo "PACKAGE_VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
-    - name: get release message
-      run: echo "RELEASE_MESSAGE=$(node -p "require('./package.json').release_message")" >> $GITHUB_ENV
     - name: install Rust stable
       uses: actions-rs/toolchain@v1
       with:
         toolchain: stable
+    - name: install tauri bundler
+      run: cargo install tauri-bundler --force
     - name: install webkit2gtk (ubuntu only)
       if: matrix.platform == 'ubuntu-18.04'
       run: |
@@ -41,9 +72,4 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        distPath: 'dist'
-        tagName: app-v${{ env.PACKAGE_VERSION }}
-        releaseName: "Desktop app v${{ env.PACKAGE_VERSION }}"
-        releaseBody: ${{ env.RELEASE_MESSAGE }}
-        releaseDraft: false
-        prerelease: false
+        releaseId: ${{ needs.create-release.outputs.RELEASE_UPLOAD_ID }}
