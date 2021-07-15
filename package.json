@@ -1,8 +1,8 @@
 {
   "name": "chess-pgn-reviser",
-  "version": "0.2.8",
+  "version": "0.2.10",
   "private": true,
-  "release_message": "Debugging release version",
+  "release_message": "Packaging for Ubuntu >= 20",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
