@@ -20,5 +20,8 @@ export default {
         "newGameError": "Une erreur est survenue: annulation de la nouvelle partie.",
         "gameWon": "Vous avez deviné l'ensemble de la partie.",
         "gameLost": "Vous vous êtes trompé de coup\nLigne principale: {mainMove}\nVariantes: {variations}",
+    },
+    "newGameDialog": {
+        "title": "Choisissez la partie à étudier :"
     }
 };

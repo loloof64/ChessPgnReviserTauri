@@ -20,5 +20,8 @@ export default {
         "newGameError": "An error occured : cancelled new game.",
         "gameWon": "You've guessed all the game.",
         "gameLost": "You made a wrong move\nMain line: {mainMove}\nVariations: {variations}",
+    },
+    "newGameDialog": {
+        "title": "Select the game to study :"
     }
 };

@@ -31,24 +31,43 @@
         height="370px"
         @position-request="handlePositionRequest"
       />
+      <game-selector ref="gameSelector" />
     </div>
-    <Dialog class="dialog" v-model:visible="alertDialogVisible" closeable="false" :modal="true">
+    <Dialog
+      class="dialog"
+      v-model:visible="alertDialogVisible"
+      closeable="false"
+      :modal="true"
+    >
       <p class="dialog-content">
-      {{alertDialogContent}}
+        {{ alertDialogContent }}
       </p>
 
       <template #footer>
         <Button class="ok-button" :label="okButton" @click="handleAlertClose" />
       </template>
     </Dialog>
-    <Dialog class="dialog" v-model:visible="confirmDialogVisible" closeable="false" :modal="true">
+    <Dialog
+      class="dialog"
+      v-model:visible="confirmDialogVisible"
+      closeable="false"
+      :modal="true"
+    >
       <p class="dialog-content">
-      {{confirmDialogContent}}
+        {{ confirmDialogContent }}
       </p>
 
       <template #footer>
-        <Button class="cancel-button" :label="cancelButton" @click="handleCancel" />
-        <Button class="confirm-button" :label="confirmButton" @click="handleConfirm" />
+        <Button
+          class="cancel-button"
+          :label="cancelButton"
+          @click="handleCancel"
+        />
+        <Button
+          class="confirm-button"
+          :label="confirmButton"
+          @click="handleConfirm"
+        />
       </template>
     </Dialog>
   </div>
@@ -58,17 +77,19 @@
 import "@loloof64/chessboard-component/dist";
 import parser from "@mliebelt/pgn-parser";
 import HistoryComponent from "./HistoryComponent.vue";
+import GameSelector from "@/components/GameSelector.vue";
 import { ref, reactive } from "vue";
 import { useI18n } from "vue-i18n";
 import { open } from "@tauri-apps/api/dialog";
 import { readTextFile } from "@tauri-apps/api/fs";
 export default {
-  components: { HistoryComponent },
+  components: { HistoryComponent, GameSelector },
   setup() {
     const { t } = useI18n();
 
     const board = ref();
     const history = ref();
+    const gameSelector = ref();
     const reversed = ref(false);
     const whiteHuman = ref(true);
     const blackHuman = ref(true);
@@ -134,9 +155,16 @@ export default {
           showAlert(t("dialogs.cancelledNewGame"));
           return;
         }
+        let selectedGameIndex;
+        try {
+          selectedGameIndex = await gameSelector.value.open();
+        }
+        catch {
+          showAlert(t("dialogs.cancelledNewGame"));
+          return;
+        }
         const fileContent = await readTextFile(selectedFile, {});
         const parsedGames = parser.parse(fileContent, { startRule: "games" });
-        const selectedGameIndex = 0;
         const selectedGame = parsedGames[selectedGameIndex];
         const startPosition =
           selectedGame.tags["FEN"] ||
@@ -272,6 +300,7 @@ export default {
     return {
       board,
       history,
+      gameSelector,
       reversed,
       newGame,
       reverseBoard,

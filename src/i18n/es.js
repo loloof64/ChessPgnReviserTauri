@@ -20,5 +20,8 @@ export default {
         "newGameError": "Ocurrió un error: nuevo juego cancelado.",
         "gameWon": "Has adivinado todo el juego.",
         "gameLost": "Hiciste un movimiento en falso\nLínea principal: {mainMove}\nVariaciones: {variations}",
+    },
+    "newGameDialog": {
+        "title": "Selecciona el juego para estudiar :"
     }
 };
