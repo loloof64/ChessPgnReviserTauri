@@ -1,8 +1,8 @@
 {
   "name": "chess-pgn-reviser",
-  "version": "0.2.16",
+  "version": "0.2.18",
   "private": true,
-  "release_message": "Trying to fix GH action build #3",
+  "release_message": "Upgraded Tauri",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
