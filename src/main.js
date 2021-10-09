@@ -3,7 +3,7 @@ import { createI18n } from "vue-i18n";
 import PrimeVue from 'primevue/config';
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
-import App from "./App.vue";
+import App from "./App.vue"
 
 import messages from "./i18n";
 
@@ -23,6 +23,8 @@ const i18n = createI18n({
 });
 
 const app = createApp(App);
+
+require('@loloof64/chessboard-component/dist');
 
 app.use(i18n);
 app.use(PrimeVue);

@@ -19,10 +19,10 @@
     <div id="game_zone">
       <loloof64-chessboard
         ref="board"
-        size="400"
         :reversed="reversed"
         :white_player_human="whiteHuman"
         :black_player_human="blackHuman"
+        :size="400"
         @move-done="handleMoveDone"
       />
       <history-component
@@ -74,7 +74,6 @@
 </template>
 
 <script>
-import "@loloof64/chessboard-component/dist";
 import parser from "@mliebelt/pgn-parser";
 import HistoryComponent from "./HistoryComponent.vue";
 import GameSelector from "@/components/GameSelector.vue";
@@ -109,10 +108,11 @@ export default {
 
     const onConfirmHandler = ref(() => {});
 
-    function newGame() {
-      const boardStalled = board.value
-        .getCurrentPosition()
-        .startsWith("8/8/8/8/8/8/8/8 w - - 0 1");
+    async function newGame() {
+      const boardPosition = await board.value.getCurrentPosition();
+      const boardStalled = boardPosition.startsWith(
+        "8/8/8/8/8/8/8/8 w - - 0 1"
+      );
       if (!boardStalled) {
         showConfirm(t("dialogs.newGameConfirmation"), doStartNewGame);
       } else {
@@ -155,20 +155,23 @@ export default {
           showAlert(t("dialogs.cancelledNewGame"));
           return;
         }
+        const fileContent = await readTextFile(selectedFile, {});
+        const parsedGames = parser.parse(fileContent, { startRule: "games" });
         let selectedGameIndex;
         try {
-          selectedGameIndex = await gameSelector.value.open();
-        }
-        catch {
+          selectedGameIndex = await gameSelector.value.open(parsedGames);
+        } catch(err) {
+          console.error(err)
           showAlert(t("dialogs.cancelledNewGame"));
           return;
         }
-        const fileContent = await readTextFile(selectedFile, {});
-        const parsedGames = parser.parse(fileContent, { startRule: "games" });
+        
         const selectedGame = parsedGames[selectedGameIndex];
         const startPosition =
           selectedGame.tags["FEN"] ||
           "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+        const startsAsBlack = startPosition.split(' ')[1] === 'b';
+        reversed.value = startsAsBlack;
         expectedMoves = selectedGame.moves;
         currentNode = expectedMoves;
         nodeIndex.value = 0;
@@ -180,7 +183,7 @@ export default {
         whiteHuman.value = true;
         blackHuman.value = true;
         history.value.newGame(startPosition);
-        board.value.newGame(startPosition);
+        await board.value.newGame(startPosition);
       } catch (err) {
         console.error(err);
         showAlert(t("dialogs.newGameError"));
