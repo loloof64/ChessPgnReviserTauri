@@ -182,7 +182,8 @@ export default {
         ].variations.map((elt) => elt[0].notation.notation);
         whiteHuman.value = true;
         blackHuman.value = true;
-        history.value.newGame(startPosition);
+        const moveNumber = parseInt(startPosition.split(' ')[5]);
+        history.value.newGame(moveNumber, !startsAsBlack);
         await board.value.newGame(startPosition);
       } catch (err) {
         console.error(err);

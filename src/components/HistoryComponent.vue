@@ -61,16 +61,18 @@ export default {
       context.emit("position-request", { ...item, index });
     }
 
-    function newGame() {
+    function newGame(moveNumber = 1, whiteTurn = true) {
       items.value.splice(0, items.value.length);
       selectedNodeIndex.value = undefined;
+      const moveNumberText = whiteTurn ? `${moveNumber}.` : `${moveNumber}...`;
+      items.value.push({text: moveNumberText});
     }
 
     function addItem(itemData) {
-      if (itemData.whiteTurn) {
-        items.value.push({ text: `${itemData.moveNumber}.` });
-      }
       items.value.push({ ...itemData, text: itemData.moveFan });
+      if (!itemData.whiteTurn) {
+        items.value.push({ text: `${parseInt(itemData.moveNumber)+1}.` });
+      }
       setTimeout(scrollToBottom, 15);
     }
 
