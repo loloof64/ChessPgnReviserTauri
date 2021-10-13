@@ -2,6 +2,8 @@
 
 Load your chess Pgn file and try to find moves from your side.
 
+Please notice that on Windows, you may have to wait a little the first time to have content in place of the blank window.
+
 ## Credits
 
 Application icon downloaded from https://www.flaticon.com/free-icon/chess_178148 and designed by Flat Icons.
