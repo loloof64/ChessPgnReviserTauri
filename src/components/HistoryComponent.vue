@@ -65,29 +65,33 @@ export default {
       items.value.splice(0, items.value.length);
       selectedNodeIndex.value = undefined;
       const moveNumberText = whiteTurn ? `${moveNumber}.` : `${moveNumber}...`;
-      items.value.push({text: moveNumberText});
+      items.value.push({ text: moveNumberText });
     }
 
     function addItem(itemData) {
       items.value.push({ ...itemData, text: itemData.moveFan });
       if (!itemData.whiteTurn) {
-        items.value.push({ text: `${parseInt(itemData.moveNumber)+1}.` });
+        items.value.push({ text: `${parseInt(itemData.moveNumber) + 1}.` });
       }
       setTimeout(scrollToBottom, 15);
     }
 
     function notifyNodeSelected(index) {
       selectedNodeIndex.value = index;
-      const itemDom = document.querySelector('#item_'+index);
-      const contentDom = document.querySelector('#content');
-      if (itemDom) contentDom.scrollTo({top: itemDom.offsetTop - contentDom.offsetTop});
+      const itemDom = document.querySelector("#item_" + index);
+      const contentDom = document.querySelector("#content");
+      if (itemDom)
+        contentDom.scrollTo({ top: itemDom.offsetTop - contentDom.offsetTop });
     }
 
     function scrollToBottom() {
-      const contentDom = document.querySelector('#content');
+      const contentDom = document.querySelector("#content");
       const lastIndex = items.value.length - 1;
-      const lastItemDom = document.querySelector('#item_'+lastIndex);
-      if (lastItemDom) contentDom.scrollTo({top: lastItemDom.offsetTop - contentDom.offsetTop});
+      const lastItemDom = document.querySelector("#item_" + lastIndex);
+      if (lastItemDom)
+        contentDom.scrollTo({
+          top: lastItemDom.offsetTop - contentDom.offsetTop,
+        });
     }
 
     function gotoFirst() {
@@ -137,8 +141,17 @@ export default {
     }
 
     function gotoLast() {
-      const tempNodeIndex = items.value.length - 1;
-      const item = items.value[tempNodeIndex];
+      let tempNodeIndex = items.value.length;
+      let item;
+      do {
+        tempNodeIndex--;
+        item = items.value[tempNodeIndex];
+
+        /////////////////////////////////////////
+        console.log(item);
+        /////////////////////////////////////////
+      } while (!item.moveFan);
+
       context.emit("position-request", {
         ...item,
         index: tempNodeIndex,

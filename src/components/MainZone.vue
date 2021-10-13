@@ -256,23 +256,23 @@ export default {
       const isExpectecMainMove = checkMainMoveCorrectness(payload);
       const expectedVariationMoveIndex = getVariationMoveIndex(payload);
       if (isExpectecMainMove) {
+        history.value.addItem(payload);
         nodeIndex.value++;
         if (nodeIndex.value < currentNode.length - 1) {
           advanceNode();
         } else {
           handleGameWon();
         }
-        history.value.addItem(payload);
       } else if (expectedVariationMoveIndex >= 0) {
         currentNode =
           currentNode[nodeIndex.value].variations[expectedVariationMoveIndex];
         nodeIndex.value = 1;
+        history.value.addItem(payload);
         if (nodeIndex.value < currentNode.length || 0) {
           advanceNode();
         } else {
           handleGameWon();
         }
-        history.value.addItem(payload);
       } else {
         const moveFan = moveSanToMoveFan(
           nextHalfMoveSan.value,

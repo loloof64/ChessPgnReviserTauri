@@ -1,8 +1,8 @@
 {
   "name": "chess-pgn-reviser",
-  "version": "0.3.2",
+  "version": "0.3.4",
   "private": true,
-  "release_message": "Trying to fix the blank screen on Windows.",
+  "release_message": "Some bug fixes.",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
