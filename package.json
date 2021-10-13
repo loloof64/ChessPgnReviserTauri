@@ -1,8 +1,8 @@
 {
   "name": "chess-pgn-reviser",
-  "version": "0.3.0",
+  "version": "0.3.2",
   "private": true,
-  "release_message": "We can select a game from the loaded pgn, and not mandatory the first one.",
+  "release_message": "Trying to fix the blank screen on Windows.",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
