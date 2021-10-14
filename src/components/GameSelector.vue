@@ -69,8 +69,8 @@ import { useI18n } from "vue-i18n";
 
 import {
   PLAYER_MODE_GUESS_MOVE,
-  // PLAYER_MODE_CHOOSE_MOVE,
-  // PLAYER_MODE_RANDOM_MOVE,
+  PLAYER_MODE_CHOOSE_MOVE,
+  PLAYER_MODE_RANDOM_MOVE,
 } from "../constants";
 
 export default {
@@ -126,6 +126,10 @@ export default {
       okClicked.value = false;
       cancelClicked.value = false;
       gameIndex.value = 0;
+      whiteModeParam.value = 0;
+      blackModeParam.value = 0;
+      whiteOptionClass.value = selectClassFromValue(whiteModeParam.value);
+      blackOptionClass.value = selectClassFromValue(blackModeParam.value);
 
       return new Promise((resolve, reject) => {
         let handler;
@@ -134,11 +138,14 @@ export default {
           if (okClicked.value) {
             displayModal.value = false;
             clearInterval(handler, checkButtonClicked);
-            resolve({
-              index: gameIndex.value,
-              whiteMode: whiteModeParam.value,
-              blackMode: blackModeParam.value,
-            });
+            // Waiting for dialog to be closed
+            setTimeout(() => {
+              resolve({
+                index: gameIndex.value,
+                whiteMode: whiteModeParam.value,
+                blackMode: blackModeParam.value,
+              });
+            }, 50);
             return;
           }
           if (cancelClicked.value) {
@@ -216,12 +223,12 @@ export default {
             manual: false,
             auto: true,
           };
-        case "manual": 
+        case "manual":
           return {
             guess: false,
             manual: true,
             auto: false,
-          }
+          };
         case "guess":
         default:
           return {
@@ -232,16 +239,30 @@ export default {
       }
     }
 
+    function modeFromValue(value) {
+      switch (value) {
+        case "auto":
+          return PLAYER_MODE_RANDOM_MOVE;
+        case "manual":
+          return PLAYER_MODE_CHOOSE_MOVE;
+        case "guess":
+        default:
+          return PLAYER_MODE_GUESS_MOVE;
+      }
+    }
+
     function handleWhiteChange() {
       const newValue = whiteSelect.value.value;
       const selectClass = selectClassFromValue(newValue);
       whiteOptionClass.value = selectClass;
+      whiteModeParam.value = modeFromValue(newValue);
     }
 
     function handleBlackChange() {
       const newValue = blackSelect.value.value;
       const selectClass = selectClassFromValue(newValue);
       blackOptionClass.value = selectClass;
+      blackModeParam.value = modeFromValue(newValue);
     }
 
     return {

@@ -20,10 +20,14 @@
       <loloof64-chessboard
         ref="board"
         :reversed="reversed"
-        :white_player_human="whiteHuman"
-        :black_player_human="blackHuman"
+        :white_player_human="playersTypes.whiteHuman"
+        :black_player_human="playersTypes.blackHuman"
+        white_cell_color="navajowhite"
+        black_cell_color="peru"
+        background="gray"
         :size="400"
         @move-done="handleMoveDone"
+        @waiting-manual-move="() => console.log('manual move mode')"
       />
       <history-component
         ref="history"
@@ -82,11 +86,7 @@ import { useI18n } from "vue-i18n";
 import { open } from "@tauri-apps/api/dialog";
 import { readTextFile } from "@tauri-apps/api/fs";
 
-import {
-  PLAYER_MODE_GUESS_MOVE,
-  // PLAYER_MODE_CHOOSE_MOVE,
-  // PLAYER_MODE_RANDOM_MOVE,
-} from "../constants";
+import { PLAYER_MODE_GUESS_MOVE, PLAYER_MODE_RANDOM_MOVE } from "../constants";
 
 export default {
   components: { HistoryComponent, GameSelector },
@@ -97,11 +97,13 @@ export default {
     const history = ref();
     const gameSelector = ref();
     const reversed = ref(false);
-    const whiteHuman = ref(true);
-    const blackHuman = ref(true);
+    const playersTypes = reactive({
+      whiteHuman: true,
+      blackHuman: true,
+    });
     let expectedMoves = reactive([]);
     const nextHalfMoveSan = ref("");
-    let nextHalfMoveVariationsSans = reactive([]);
+    let nextHalfMoveVariationsSanList = reactive([]);
     const nodeIndex = ref(0);
     let currentNode = reactive({});
 
@@ -193,20 +195,67 @@ export default {
         nodeIndex.value = 0;
         nextHalfMoveSan.value =
           expectedMoves[nodeIndex.value].notation.notation;
-        nextHalfMoveVariationsSans = expectedMoves[
+        nextHalfMoveVariationsSanList = expectedMoves[
           nodeIndex.value
         ].variations.map((elt) => elt[0].notation.notation);
         whiteMode.value = whiteModeParam;
         blackMode.value = blackModeParam;
-        whiteHuman.value = whiteMode.value === PLAYER_MODE_GUESS_MOVE;
-        blackHuman.value = blackMode.value === PLAYER_MODE_GUESS_MOVE;
+        playersTypes.whiteHuman = whiteMode.value === PLAYER_MODE_GUESS_MOVE;
+        playersTypes.blackHuman = blackMode.value === PLAYER_MODE_GUESS_MOVE;
         const moveNumber = parseInt(startPosition.split(" ")[5]);
-        history.value.newGame(moveNumber, !startsAsBlack);
-        await board.value.newGame(startPosition);
+
+        setTimeout(async () => {
+          history.value.newGame(moveNumber, !startsAsBlack);
+          await board.value.newGame(startPosition);
+
+          // Lets the interface refresh before next move if not manual.
+          setTimeout(() => {
+            playNextMoveIfPossible();
+          }, 50);
+        }, 50);
       } catch (err) {
         console.error(err);
         showAlert(t("dialogs.newGameError"));
       }
+    }
+
+    function playNextMoveIfPossible() {
+      const whiteTurn = board.value.isWhiteTurn();
+      const currentMoveInGuessMode =
+        (whiteTurn && whiteMode.value === PLAYER_MODE_GUESS_MOVE) ||
+        (!whiteTurn && blackMode.value === PLAYER_MODE_GUESS_MOVE);
+
+      if (currentMoveInGuessMode) return;
+      const nextMoveHasVariations = nextHalfMoveVariationsSanList.length > 0;
+
+      if (nextMoveHasVariations) {
+        //////////////////////
+        console.log(nextHalfMoveVariationsSanList);
+        //////////////////////
+
+        const currentMode = whiteTurn ? whiteMode.value : blackMode.value;
+        const isInAutoSelectMode = currentMode === PLAYER_MODE_RANDOM_MOVE;
+
+        ////////////////////////////
+        console.log(isInAutoSelectMode);
+        /////////////////////////////
+
+        /*
+        if (isInAutoSelectMode) {
+
+        }
+        else {
+
+        }
+        */
+      } else {
+        board.value.playMoveSan(nextHalfMoveSan.value);
+      }
+
+      // Lets the interface refresh before next move if not manual.
+      setTimeout(() => {
+        playNextMoveIfPossible();
+      }, 50);
     }
 
     function reverseBoard() {
@@ -220,14 +269,21 @@ export default {
 
     function getVariationMoveIndex(moveObject) {
       const moveSan = moveObject.moveSan;
-      return nextHalfMoveVariationsSans.findIndex((item) => item === moveSan);
+      return nextHalfMoveVariationsSanList.findIndex(
+        (item) => item === moveSan
+      );
     }
 
     function advanceNode() {
       nextHalfMoveSan.value = currentNode[nodeIndex.value].notation.notation;
-      nextHalfMoveVariationsSans = currentNode[nodeIndex.value].variations.map(
-        (elt) => elt[0].notation.notation
-      );
+      nextHalfMoveVariationsSanList = currentNode[
+        nodeIndex.value
+      ].variations.map((elt) => elt[0].notation.notation);
+
+      // Lets the interface refresh before next move if not manual.
+      setTimeout(() => {
+        playNextMoveIfPossible();
+      }, 50);
     }
 
     function handleGameWon() {
@@ -273,6 +329,7 @@ export default {
       const payload = event.detail.moveObject;
       const isExpectecMainMove = checkMainMoveCorrectness(payload);
       const expectedVariationMoveIndex = getVariationMoveIndex(payload);
+      // User found the main move
       if (isExpectecMainMove) {
         history.value.addItem(payload);
         nodeIndex.value++;
@@ -281,7 +338,9 @@ export default {
         } else {
           handleGameWon();
         }
-      } else if (expectedVariationMoveIndex >= 0) {
+      }
+      // User found a variation move
+      else if (expectedVariationMoveIndex >= 0) {
         currentNode =
           currentNode[nodeIndex.value].variations[expectedVariationMoveIndex];
         nodeIndex.value = 1;
@@ -291,12 +350,14 @@ export default {
         } else {
           handleGameWon();
         }
-      } else {
+      }
+      // User failed to find an expected move.
+      else {
         const moveFan = moveSanToMoveFan(
           nextHalfMoveSan.value,
           !board.value.isWhiteTurn()
         );
-        const variationsFans = nextHalfMoveVariationsSans.map((elt) =>
+        const variationsFans = nextHalfMoveVariationsSanList.map((elt) =>
           moveSanToMoveFan(elt, !board.value.isWhiteTurn())
         );
         history.value.addItem(payload);
@@ -328,8 +389,7 @@ export default {
       reverseBoard,
       handleMoveDone,
       handlePositionRequest,
-      whiteHuman,
-      blackHuman,
+      playersTypes,
       alertDialogVisible,
       alertDialogContent,
       confirmDialogVisible,
