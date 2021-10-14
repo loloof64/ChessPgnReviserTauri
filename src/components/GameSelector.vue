@@ -25,38 +25,34 @@
       />
       <div class="optionsZone">
         <div class="optionLine">
-          <span>{{whiteModeLabel}}</span>
-          <select>
+          <span>{{ whiteModeLabel }}</span>
+          <select @change="handleWhiteChange" ref="whiteSelect">
             <option value="guess">
-              <img src="../assets/images/question_mark.png" />
-              <span>{{guessLabel}}</span>
+              <span>{{ guessLabel }}</span>
             </option>
             <option value="manual">
-              <img src="../assets/images/cross_arrows.png" />
-              <span>{{manualLabel}}</span>
+              <span>{{ manualLabel }}</span>
             </option>
             <option value="auto">
-              <img src="../assets/images/dices.png" />
-              <span>{{autoLabel}}</span>
+              <span>{{ autoLabel }}</span>
             </option>
           </select>
+          <img :class="whiteOptionClass" width="20" height="20" />
         </div>
         <div class="optionLine">
-          <span>{{blackModeLabel}}</span>
-          <select>
+          <span>{{ blackModeLabel }}</span>
+          <select @change="handleBlackChange" ref="blackSelect">
             <option value="guess">
-              <img src="../assets/images/question_mark.png"/>
-              <span>{{guessLabel}}</span>
+              <span>{{ guessLabel }}</span>
             </option>
             <option value="manual">
-              <img src="../assets/images/cross_arrows.png"/>
-              <span>{{manualLabel}}</span>
+              <span>{{ manualLabel }}</span>
             </option>
             <option value="auto">
-              <img src="../assets/images/dices.png"/>
-              <span>{{autoLabel}}</span>
+              <span>{{ autoLabel }}</span>
             </option>
           </select>
+          <img :class="blackOptionClass" width="20" height="20" />
         </div>
       </div>
     </div>
@@ -75,7 +71,7 @@ import {
   PLAYER_MODE_GUESS_MOVE,
   // PLAYER_MODE_CHOOSE_MOVE,
   // PLAYER_MODE_RANDOM_MOVE,
-} from '../constants';
+} from "../constants";
 
 export default {
   setup() {
@@ -83,11 +79,11 @@ export default {
     const title = ref(t("newGameDialog.title"));
     const okButton = ref(t("dialogs.okButton"));
     const cancelButton = ref(t("dialogs.cancelButton"));
-    const whiteModeLabel = ref(t('newGameDialog.whiteMode'));
-    const blackModeLabel = ref(t('newGameDialog.blackMode'));
-    const guessLabel = ref(t('newGameDialog.guess'));
-    const manualLabel = ref(t('newGameDialog.manual'));
-    const autoLabel = ref(t('newGameDialog.auto'));
+    const whiteModeLabel = ref(t("newGameDialog.whiteMode"));
+    const blackModeLabel = ref(t("newGameDialog.blackMode"));
+    const guessLabel = ref(t("newGameDialog.guess"));
+    const manualLabel = ref(t("newGameDialog.manual"));
+    const autoLabel = ref(t("newGameDialog.auto"));
     const displayModal = ref(false);
     const okClicked = ref(false);
     const cancelClicked = ref(false);
@@ -98,10 +94,15 @@ export default {
     const board = ref();
     const boardReversed = ref(false);
     const gamesArray = ref();
+    const whiteSelect = ref();
+    const blackSelect = ref();
     const firstLabel = ref(t("newGameDialog.first"));
     const previousLabel = ref(t("newGameDialog.previous"));
     const nextLabel = ref(t("newGameDialog.next"));
     const lastLabel = ref(t("newGameDialog.last"));
+
+    const whiteOptionClass = ref({ guess: true, manual: false, auto: false });
+    const blackOptionClass = ref({ guess: true, manual: false, auto: false });
 
     function getCurrentGameStartPosition() {
       const selectedGame = gamesArray.value[gameIndex.value];
@@ -133,7 +134,11 @@ export default {
           if (okClicked.value) {
             displayModal.value = false;
             clearInterval(handler, checkButtonClicked);
-            resolve({index: gameIndex.value, whiteMode: whiteModeParam.value, blackMode: blackModeParam.value});
+            resolve({
+              index: gameIndex.value,
+              whiteMode: whiteModeParam.value,
+              blackMode: blackModeParam.value,
+            });
             return;
           }
           if (cancelClicked.value) {
@@ -203,6 +208,42 @@ export default {
       }
     }
 
+    function selectClassFromValue(value) {
+      switch (value) {
+        case "auto":
+          return {
+            guess: false,
+            manual: false,
+            auto: true,
+          };
+        case "manual": 
+          return {
+            guess: false,
+            manual: true,
+            auto: false,
+          }
+        case "guess":
+        default:
+          return {
+            guess: true,
+            manual: false,
+            auto: false,
+          };
+      }
+    }
+
+    function handleWhiteChange() {
+      const newValue = whiteSelect.value.value;
+      const selectClass = selectClassFromValue(newValue);
+      whiteOptionClass.value = selectClass;
+    }
+
+    function handleBlackChange() {
+      const newValue = blackSelect.value.value;
+      const selectClass = selectClassFromValue(newValue);
+      blackOptionClass.value = selectClass;
+    }
+
     return {
       board,
       title,
@@ -233,6 +274,15 @@ export default {
       guessLabel,
       manualLabel,
       autoLabel,
+
+      handleWhiteChange,
+      handleBlackChange,
+
+      whiteSelect,
+      blackSelect,
+
+      whiteOptionClass,
+      blackOptionClass,
     };
   },
 };
@@ -240,7 +290,7 @@ export default {
 
 <style>
 .p-dialog-content {
-  width: 90vw;
+  width: 98vw;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -312,6 +362,18 @@ select > option {
   justify-content: flex-start;
   align-items: center;
   margin: 0 6px;
+}
+
+.guess {
+  content: url("../assets/images/question_mark.png");
+}
+
+.manual {
+  content: url("../assets/images/cross_arrows.png");
+}
+
+.auto {
+  content: url("../assets/images/dices.png");
 }
 
 select > option > span {
