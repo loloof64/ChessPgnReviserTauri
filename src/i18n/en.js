@@ -22,6 +22,9 @@ export default {
     gameWon: "You've guessed all the game.",
     gameLost:
       "You made a wrong move\nMain line: {mainMove}\nVariations: {variations}",
+    variationSelectionTitle: "Select the next move",
+    variationSelectionMainMove: "Main move",
+    variationSelectionVariations: "Variations",
   },
   newGameDialog: {
     title: "Select the game to study :",

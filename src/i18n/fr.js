@@ -22,6 +22,9 @@ export default {
     gameWon: "Vous avez deviné l'ensemble de la partie.",
     gameLost:
       "Vous vous êtes trompé de coup\nLigne principale: {mainMove}\nVariantes: {variations}",
+    variationSelectionTitle: "Choisissez le prochain coup",
+    variationSelectionMainMove: "Coup principal",
+    variationSelectionVariations: "Variantes",
   },
   newGameDialog: {
     title: "Choisissez la partie à étudier :",

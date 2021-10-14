@@ -74,6 +74,29 @@
         />
       </template>
     </Dialog>
+    <Dialog
+      class="dialog"
+      v-model:visible="selectVariationMoveVisible"
+      closable="false"
+      :modal="true"
+    >
+      <div class="variationSelectionRoot">
+        <h5>{{ variationSelectionTitle }}</h5>
+        <span class="subtitle">{{variationSelectionMainMoveLabel}}</span>
+        <span class="standard" @click="playMainMove">{{nextHalfMoveSan}}</span>
+        <span class="subtitle">{{variationSelectionVariationsLabel}}</span>
+        <ul class="variationSelectionList">
+          <li
+            class="variationSelectionItem"
+            v-for="item in nextHalfMoveVariationsSanList"
+            :key="item"
+            @click="() => handleVariationMoveSelected(item)"
+          >
+            {{ item }}
+          </li>
+        </ul>
+      </div>
+    </Dialog>
   </div>
 </template>
 
@@ -103,7 +126,7 @@ export default {
     });
     let expectedMoves = reactive([]);
     const nextHalfMoveSan = ref("");
-    let nextHalfMoveVariationsSanList = reactive([]);
+    let nextHalfMoveVariationsSanList = ref([]);
     const nodeIndex = ref(0);
     let currentNode = reactive({});
 
@@ -114,9 +137,13 @@ export default {
     const alertDialogContent = ref("");
     const confirmDialogVisible = ref(false);
     const confirmDialogContent = ref("");
+    const selectVariationMoveVisible = ref(false);
     const okButton = ref(t("dialogs.okButton"));
     const confirmButton = ref(t("dialogs.confirmButton"));
     const cancelButton = ref(t("dialogs.cancelButton"));
+    const variationSelectionTitle = ref(t("dialogs.variationSelectionTitle"));
+    const variationSelectionMainMoveLabel = ref(t('dialogs.variationSelectionMainMove'));
+    const variationSelectionVariationsLabel = ref(t('dialogs.variationSelectionVariations'));
 
     const onConfirmHandler = ref(() => {});
 
@@ -195,7 +222,7 @@ export default {
         nodeIndex.value = 0;
         nextHalfMoveSan.value =
           expectedMoves[nodeIndex.value].notation.notation;
-        nextHalfMoveVariationsSanList = expectedMoves[
+        nextHalfMoveVariationsSanList.value = expectedMoves[
           nodeIndex.value
         ].variations.map((elt) => elt[0].notation.notation);
         whiteMode.value = whiteModeParam;
@@ -226,45 +253,36 @@ export default {
         (!whiteTurn && blackMode.value === PLAYER_MODE_GUESS_MOVE);
 
       if (currentMoveInGuessMode) return;
-      const nextMoveHasVariations = nextHalfMoveVariationsSanList.length > 0;
+      const nextMoveHasVariations = nextHalfMoveVariationsSanList.value.length > 0;
 
       if (nextMoveHasVariations) {
-        //////////////////////
-        console.log(nextHalfMoveVariationsSanList);
-        //////////////////////
-
         const currentMode = whiteTurn ? whiteMode.value : blackMode.value;
         const isInAutoSelectMode = currentMode === PLAYER_MODE_RANDOM_MOVE;
-
-        ////////////////////////////
-        console.log(isInAutoSelectMode);
-        /////////////////////////////
 
         if (isInAutoSelectMode) {
           const mustPlayMainMove = Math.random() >= 0.5;
           if (mustPlayMainMove) {
             board.value.playMoveSan(nextHalfMoveSan.value);
-          }
-          else {
-            const variationsCount = nextHalfMoveVariationsSanList.length;
-            const selectedVariationIndex = parseInt(Math.random() * variationsCount);
-            const selectedMoveSan = nextHalfMoveVariationsSanList[selectedVariationIndex];
+          } else {
+            const variationsCount = nextHalfMoveVariationsSanList.value.length;
+            const selectedVariationIndex = parseInt(
+              Math.random() * variationsCount
+            );
+            const selectedMoveSan =
+              nextHalfMoveVariationsSanList.value[selectedVariationIndex];
             board.value.playMoveSan(selectedMoveSan);
           }
+        } else {
+          ////////////////////////////////
+          console.log(nextHalfMoveVariationsSanList.value);
+          /////////////////////////////////
+          selectVariationMoveVisible.value = true;
         }
-        /*
-        else {
-
-        }
-        */
       } else {
         board.value.playMoveSan(nextHalfMoveSan.value);
       }
 
-      // Lets the interface refresh before next move if not manual.
-      setTimeout(() => {
-        playNextMoveIfPossible();
-      }, 50);
+      advanceNode();
     }
 
     function reverseBoard() {
@@ -278,14 +296,16 @@ export default {
 
     function getVariationMoveIndex(moveObject) {
       const moveSan = moveObject.moveSan;
-      return nextHalfMoveVariationsSanList.findIndex(
+      return nextHalfMoveVariationsSanList.value.findIndex(
         (item) => item === moveSan
       );
     }
 
+    // Updates current move pointer as well as next main move and next variations.
+    // Also tries to play next move if should be played automatically.
     function advanceNode() {
       nextHalfMoveSan.value = currentNode[nodeIndex.value].notation.notation;
-      nextHalfMoveVariationsSanList = currentNode[
+      nextHalfMoveVariationsSanList.value = currentNode[
         nodeIndex.value
       ].variations.map((elt) => elt[0].notation.notation);
 
@@ -366,7 +386,7 @@ export default {
           nextHalfMoveSan.value,
           !board.value.isWhiteTurn()
         );
-        const variationsFans = nextHalfMoveVariationsSanList.map((elt) =>
+        const variationsFans = nextHalfMoveVariationsSanList.value.map((elt) =>
           moveSanToMoveFan(elt, !board.value.isWhiteTurn())
         );
         history.value.addItem(payload);
@@ -389,6 +409,18 @@ export default {
       }
     }
 
+    function handleVariationMoveSelected(moveSan) {
+      board.value.playMoveSan(moveSan);
+      selectVariationMoveVisible.value = false;
+      advanceNode();
+    }
+
+    function playMainMove() {
+      board.value.playMoveSan(nextHalfMoveSan.value);
+      selectVariationMoveVisible.value = false;
+      advanceNode();
+    }
+
     return {
       board,
       history,
@@ -409,6 +441,14 @@ export default {
       handleConfirm,
       handleCancel,
       handleAlertClose,
+      handleVariationMoveSelected,
+      playMainMove,
+      selectVariationMoveVisible,
+      variationSelectionTitle,
+      nextHalfMoveSan,
+      nextHalfMoveVariationsSanList,
+      variationSelectionMainMoveLabel,
+      variationSelectionVariationsLabel,
     };
   },
 };
@@ -430,11 +470,37 @@ export default {
   border: 1px solid black;
 }
 
+span.subtitle {
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+span.standard {
+  font-size: 1.1rem;
+  font-weight: lighter;
+}
+
 #game_zone {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
   align-self: flex-start;
   width: 850px;
+}
+
+.variationSelectionRoot {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: flex-start;
+}
+
+.variationSelectionList {
+  overflow-y: scroll;
+}
+
+.variationSelectionItem {
+  list-style-type: none;
+  font-size: 1.2rem;
 }
 </style>

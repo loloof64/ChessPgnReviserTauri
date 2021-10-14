@@ -22,6 +22,9 @@ export default {
     gameWon: "Has adivinado todo el juego.",
     gameLost:
       "Hiciste un movimiento en falso\nLínea principal: {mainMove}\nVariaciones: {variations}",
+    variationSelectionTitle: "Seleccione el siguiente golpe",
+    variationSelectionMainMove: "Golpe principal",
+    variationSelectionVariations: "Variaciones",
   },
   newGameDialog: {
     title: "Selecciona el juego para estudiar :",
@@ -33,6 +36,7 @@ export default {
     blackMode: "Negros",
     guess: "Adivina el golpe",
     manual: "Juego automático: usted selecciona las variaciónes",
-    auto: "Juego automático: la computadora selecciona aleatoriamente las variaciónes",
+    auto:
+      "Juego automático: la computadora selecciona aleatoriamente las variaciónes",
   },
 };
