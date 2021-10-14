@@ -15,13 +15,51 @@
       <button :label="lastLabel" @click="gotoLastGame">&#x21E5;</button>
       <input ref="gameInput" type="number" @change="gotoQueried" />
     </div>
-    <loloof64-chessboard
-      ref="board"
-      :white_player_human="false"
-      :black_player_human="false"
-      :size="350"
-      :reversed="boardReversed"
-    />
+    <div class="mainZone">
+      <loloof64-chessboard
+        ref="board"
+        :white_player_human="false"
+        :black_player_human="false"
+        :size="300"
+        :reversed="boardReversed"
+      />
+      <div class="optionsZone">
+        <div class="optionLine">
+          <span>{{whiteModeLabel}}</span>
+          <select>
+            <option value="guess">
+              <img src="../assets/images/question_mark.png" />
+              <span>{{guessLabel}}</span>
+            </option>
+            <option value="manual">
+              <img src="../assets/images/cross_arrows.png" />
+              <span>{{manualLabel}}</span>
+            </option>
+            <option value="auto">
+              <img src="../assets/images/dices.png" />
+              <span>{{autoLabel}}</span>
+            </option>
+          </select>
+        </div>
+        <div class="optionLine">
+          <span>{{blackModeLabel}}</span>
+          <select>
+            <option value="guess">
+              <img src="../assets/images/question_mark.png"/>
+              <span>{{guessLabel}}</span>
+            </option>
+            <option value="manual">
+              <img src="../assets/images/cross_arrows.png"/>
+              <span>{{manualLabel}}</span>
+            </option>
+            <option value="auto">
+              <img src="../assets/images/dices.png"/>
+              <span>{{autoLabel}}</span>
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
     <div class="buttonsZone">
       <button class="cancel" @click="cancel">{{ cancelButton }}</button>
       <button class="confirm" @click="confirm">{{ okButton }}</button>
@@ -32,16 +70,30 @@
 <script>
 import { ref, computed } from "vue";
 import { useI18n } from "vue-i18n";
+
+import {
+  PLAYER_MODE_GUESS_MOVE,
+  // PLAYER_MODE_CHOOSE_MOVE,
+  // PLAYER_MODE_RANDOM_MOVE,
+} from '../constants';
+
 export default {
   setup() {
     const { t } = useI18n();
     const title = ref(t("newGameDialog.title"));
     const okButton = ref(t("dialogs.okButton"));
     const cancelButton = ref(t("dialogs.cancelButton"));
+    const whiteModeLabel = ref(t('newGameDialog.whiteMode'));
+    const blackModeLabel = ref(t('newGameDialog.blackMode'));
+    const guessLabel = ref(t('newGameDialog.guess'));
+    const manualLabel = ref(t('newGameDialog.manual'));
+    const autoLabel = ref(t('newGameDialog.auto'));
     const displayModal = ref(false);
     const okClicked = ref(false);
     const cancelClicked = ref(false);
     const gameIndex = ref(0);
+    const whiteModeParam = ref(PLAYER_MODE_GUESS_MOVE);
+    const blackModeParam = ref(PLAYER_MODE_GUESS_MOVE);
     const gameInput = ref();
     const board = ref();
     const boardReversed = ref(false);
@@ -81,7 +133,7 @@ export default {
           if (okClicked.value) {
             displayModal.value = false;
             clearInterval(handler, checkButtonClicked);
-            resolve(gameIndex.value);
+            resolve({index: gameIndex.value, whiteMode: whiteModeParam.value, blackMode: blackModeParam.value});
             return;
           }
           if (cancelClicked.value) {
@@ -175,6 +227,12 @@ export default {
       boardReversed,
       gameInput,
       gotoQueried,
+
+      whiteModeLabel,
+      blackModeLabel,
+      guessLabel,
+      manualLabel,
+      autoLabel,
     };
   },
 };
@@ -182,12 +240,38 @@ export default {
 
 <style>
 .p-dialog-content {
-  width: 48vw;
+  width: 90vw;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
   overflow-y: scroll;
+}
+
+.mainZone {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.optionsZone {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.optionLine {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 2px 8px;
+}
+
+.optionLine > span {
+  font-size: 0.8rem;
 }
 
 .buttonsZone {
@@ -220,5 +304,17 @@ button {
 .navigation button {
   color: black;
   margin: 0 0.2rem;
+}
+
+select > option {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 0 6px;
+}
+
+select > option > span {
+  font-size: 0.3rem;
 }
 </style>

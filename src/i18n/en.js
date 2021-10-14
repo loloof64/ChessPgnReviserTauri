@@ -29,5 +29,10 @@ export default {
     previous: "Previous game",
     next: "Next game",
     last: "Last game",
+    whiteMode: "White",
+    blackMode: "Black",
+    guess: "Guess the move",
+    manual: "Automatic game : you select the variations",
+    auto: "Automatic game : computer selects randomly the variations",
   },
 };

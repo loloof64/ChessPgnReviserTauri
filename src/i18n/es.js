@@ -29,5 +29,10 @@ export default {
     previous: "Juego anterior",
     next: "Siguiente juego",
     last: "Último juego",
+    whiteMode: "Blancos",
+    blackMode: "Negros",
+    guess: "Adivina el golpe",
+    manual: "Juego automático: usted selecciona las variaciónes",
+    auto: "Juego automático: la computadora selecciona aleatoriamente las variaciónes",
   },
 };

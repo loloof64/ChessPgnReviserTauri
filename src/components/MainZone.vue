@@ -81,6 +81,13 @@ import { ref, reactive } from "vue";
 import { useI18n } from "vue-i18n";
 import { open } from "@tauri-apps/api/dialog";
 import { readTextFile } from "@tauri-apps/api/fs";
+
+import {
+  PLAYER_MODE_GUESS_MOVE,
+  // PLAYER_MODE_CHOOSE_MOVE,
+  // PLAYER_MODE_RANDOM_MOVE,
+} from "../constants";
+
 export default {
   components: { HistoryComponent, GameSelector },
   setup() {
@@ -97,6 +104,9 @@ export default {
     let nextHalfMoveVariationsSans = reactive([]);
     const nodeIndex = ref(0);
     let currentNode = reactive({});
+
+    const whiteMode = ref(PLAYER_MODE_GUESS_MOVE);
+    const blackMode = ref(PLAYER_MODE_GUESS_MOVE);
 
     const alertDialogVisible = ref(false);
     const alertDialogContent = ref("");
@@ -157,20 +167,26 @@ export default {
         }
         const fileContent = await readTextFile(selectedFile, {});
         const parsedGames = parser.parse(fileContent, { startRule: "games" });
-        let selectedGameIndex;
+        let selectedGameParams;
         try {
-          selectedGameIndex = await gameSelector.value.open(parsedGames);
-        } catch(err) {
-          console.error(err)
+          selectedGameParams = await gameSelector.value.open(parsedGames);
+        } catch (err) {
+          console.error(err);
           showAlert(t("dialogs.cancelledNewGame"));
           return;
         }
-        
+
+        const {
+          index: selectedGameIndex,
+          whiteMode: whiteModeParam,
+          blackMode: blackModeParam,
+        } = selectedGameParams;
+
         const selectedGame = parsedGames[selectedGameIndex];
         const startPosition =
           selectedGame.tags["FEN"] ||
           "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-        const startsAsBlack = startPosition.split(' ')[1] === 'b';
+        const startsAsBlack = startPosition.split(" ")[1] === "b";
         reversed.value = startsAsBlack;
         expectedMoves = selectedGame.moves;
         currentNode = expectedMoves;
@@ -180,9 +196,11 @@ export default {
         nextHalfMoveVariationsSans = expectedMoves[
           nodeIndex.value
         ].variations.map((elt) => elt[0].notation.notation);
-        whiteHuman.value = true;
-        blackHuman.value = true;
-        const moveNumber = parseInt(startPosition.split(' ')[5]);
+        whiteMode.value = whiteModeParam;
+        blackMode.value = blackModeParam;
+        whiteHuman.value = whiteMode.value === PLAYER_MODE_GUESS_MOVE;
+        blackHuman.value = blackMode.value === PLAYER_MODE_GUESS_MOVE;
+        const moveNumber = parseInt(startPosition.split(" ")[5]);
         history.value.newGame(moveNumber, !startsAsBlack);
         await board.value.newGame(startPosition);
       } catch (err) {

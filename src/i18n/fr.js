@@ -29,5 +29,10 @@ export default {
     previous: "Partie précédente",
     next: "Partie suivante",
     last: "Dernière partie",
+    whiteMode: "Blancs",
+    blackMode: "Noirs",
+    guess: "Deviner les coups",
+    manual: "Jeu automatique : vous choisissez les variantes",
+    auto: "Jeu automatique : l'ordinateur choisit aléatoirement les variantes",
   },
 };

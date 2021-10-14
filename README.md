@@ -16,6 +16,9 @@ Other images have been downloaded from flaticon :
 * previous_item : downloaded at https://www.flaticon.com/free-icon/black-triangular-arrowhead-pointing-to-left-direction_45050 and designed by FreePik
 * last_item : downloaded at https://www.flaticon.com/free-icon/right-thin-arrowheads_32738 and designed by FreePik
 * next_item : downloaded at https://www.flaticon.com/free-icon/right-triangular-arrowhead_44452 and designed by FreePik
+* cross_arrows : downloaded at https://www.flaticon.com/free-icon/shuffle-crossing-arrows_59489 and designed by FreePik
+* question_mark : downloaded at https://www.flaticon.com/free-icon/question-mark-on-a-circular-black-background_25400 and designed by Dave Gandy
+* dices : downloaded at https://www.flaticon.com/free-icon/dice_1009624 and designed by Vitaly Gorbachev
 
 FreeSerif font downloaded from https://fr.fonts2u.com/free-serif.police
 
