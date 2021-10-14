@@ -82,9 +82,11 @@
     >
       <div class="variationSelectionRoot">
         <h5>{{ variationSelectionTitle }}</h5>
-        <span class="subtitle">{{variationSelectionMainMoveLabel}}</span>
-        <span class="standard" @click="playMainMove">{{nextHalfMoveSan}}</span>
-        <span class="subtitle">{{variationSelectionVariationsLabel}}</span>
+        <span class="subtitle">{{ variationSelectionMainMoveLabel }}</span>
+        <span class="standard" @click="playMainMove">{{
+          nextHalfMoveSan
+        }}</span>
+        <span class="subtitle">{{ variationSelectionVariationsLabel }}</span>
         <ul class="variationSelectionList">
           <li
             class="variationSelectionItem"
@@ -142,8 +144,12 @@ export default {
     const confirmButton = ref(t("dialogs.confirmButton"));
     const cancelButton = ref(t("dialogs.cancelButton"));
     const variationSelectionTitle = ref(t("dialogs.variationSelectionTitle"));
-    const variationSelectionMainMoveLabel = ref(t('dialogs.variationSelectionMainMove'));
-    const variationSelectionVariationsLabel = ref(t('dialogs.variationSelectionVariations'));
+    const variationSelectionMainMoveLabel = ref(
+      t("dialogs.variationSelectionMainMove")
+    );
+    const variationSelectionVariationsLabel = ref(
+      t("dialogs.variationSelectionVariations")
+    );
 
     const onConfirmHandler = ref(() => {});
 
@@ -252,8 +258,19 @@ export default {
         (whiteTurn && whiteMode.value === PLAYER_MODE_GUESS_MOVE) ||
         (!whiteTurn && blackMode.value === PLAYER_MODE_GUESS_MOVE);
 
+      ////////////////////////////////////////////
+      console.log("-----------------");
+      console.log("currentMoveInGuessMode", currentMoveInGuessMode);
+      console.log("nextHalfMoveSan", nextHalfMoveSan);
+      console.log(
+        "nextHalfMoveVariationsSanList",
+        nextHalfMoveVariationsSanList
+      );
+      ////////////////////////////////////////////
+
       if (currentMoveInGuessMode) return;
-      const nextMoveHasVariations = nextHalfMoveVariationsSanList.value.length > 0;
+      const nextMoveHasVariations =
+        nextHalfMoveVariationsSanList.value.length > 0;
 
       if (nextMoveHasVariations) {
         const currentMode = whiteTurn ? whiteMode.value : blackMode.value;
@@ -272,13 +289,17 @@ export default {
               nextHalfMoveVariationsSanList.value[selectedVariationIndex];
             board.value.playMoveSan(selectedMoveSan);
           }
-        } else {
-          ////////////////////////////////
-          console.log(nextHalfMoveVariationsSanList.value);
-          /////////////////////////////////
-          selectVariationMoveVisible.value = true;
         }
-      } else {
+        // Lets user choose next move.
+        else {
+          selectVariationMoveVisible.value = true;
+          // We should NOT try to play next move, in order to avoid infinite loop
+          // If we don't return now, this is what will happen, because of following lines !
+          return;
+        }
+      }
+      // Simply plays next move.
+      else {
         board.value.playMoveSan(nextHalfMoveSan.value);
       }
 
@@ -301,7 +322,7 @@ export default {
       );
     }
 
-    // Updates current move pointer as well as next main move and next variations.
+    // Updates next main move and next variations.
     // Also tries to play next move if should be played automatically.
     function advanceNode() {
       nextHalfMoveSan.value = currentNode[nodeIndex.value].notation.notation;
@@ -362,7 +383,7 @@ export default {
       if (isExpectecMainMove) {
         history.value.addItem(payload);
         nodeIndex.value++;
-        if (nodeIndex.value < currentNode.length - 1) {
+        if (nodeIndex.value < currentNode.length) {
           advanceNode();
         } else {
           handleGameWon();
@@ -374,7 +395,7 @@ export default {
           currentNode[nodeIndex.value].variations[expectedVariationMoveIndex];
         nodeIndex.value = 1;
         history.value.addItem(payload);
-        if (nodeIndex.value < currentNode.length || 0) {
+        if (nodeIndex.value < currentNode.length) {
           advanceNode();
         } else {
           handleGameWon();
