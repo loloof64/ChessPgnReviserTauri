@@ -146,10 +146,6 @@ export default {
       do {
         tempNodeIndex--;
         item = items.value[tempNodeIndex];
-
-        /////////////////////////////////////////
-        console.log(item);
-        /////////////////////////////////////////
       } while (!item.moveFan);
 
       context.emit("position-request", {

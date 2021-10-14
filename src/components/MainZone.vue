@@ -240,10 +240,19 @@ export default {
         console.log(isInAutoSelectMode);
         /////////////////////////////
 
-        /*
         if (isInAutoSelectMode) {
-
+          const mustPlayMainMove = Math.random() >= 0.5;
+          if (mustPlayMainMove) {
+            board.value.playMoveSan(nextHalfMoveSan.value);
+          }
+          else {
+            const variationsCount = nextHalfMoveVariationsSanList.length;
+            const selectedVariationIndex = parseInt(Math.random() * variationsCount);
+            const selectedMoveSan = nextHalfMoveVariationsSanList[selectedVariationIndex];
+            board.value.playMoveSan(selectedMoveSan);
+          }
         }
+        /*
         else {
 
         }
