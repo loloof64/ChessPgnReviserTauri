@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: 14
           cache: yarn
-        run: yarn install
+      - run: yarn install
       - name: install Rust stable
         uses: actions-rs/toolchain@v1
         with:
