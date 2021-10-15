@@ -54,4 +54,7 @@ export default {
     game: "Game",
     number: "n°",
   },
+  misc: {
+    pgnFilter: "Pgn file (*.pgn)",
+  }
 };

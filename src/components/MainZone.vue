@@ -195,7 +195,7 @@ export default {
         const selectedFile = await open({
           directory: false,
           multiple: false,
-          filters: [{ name: "Pgn file (*.pgn)", extensions: ["pgn"] }],
+          filters: [{ name: t('misc.pgnFilter'), extensions: ["pgn"] }],
         });
         if (!selectedFile) {
           showAlert(t("dialogs.cancelledNewGame"));

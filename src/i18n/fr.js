@@ -53,5 +53,8 @@ export default {
     black: "Noirs",
     game: "Partie",
     number: "n°",
+  },
+  misc: {
+    pgnFilter: "Fichier pgn (*.pgn)",
   }
 };
