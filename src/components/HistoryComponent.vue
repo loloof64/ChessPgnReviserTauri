@@ -1,5 +1,5 @@
 <template>
-  <div id="root">
+  <div id="historyRoot">
     <div id="buttons_bar">
       <img
         class="button"
@@ -186,7 +186,7 @@ export default {
 </script>
 
 <style scoped>
-#root {
+#historyRoot {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;

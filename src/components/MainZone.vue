@@ -44,48 +44,39 @@
       />
       <game-selector ref="gameSelector" />
     </div>
-    <Dialog
-      class="dialog"
-      v-model:visible="alertDialogVisible"
-      closeable="false"
-      :modal="true"
+    <ModalDialog
+      ref="alertDialog"
     >
       <p class="dialog-content">
         {{ alertDialogContent }}
       </p>
 
-      <template #footer>
-        <Button class="ok-button" :label="okButton" @click="handleAlertClose" />
-      </template>
-    </Dialog>
-    <Dialog
-      class="dialog"
-      v-model:visible="confirmDialogVisible"
-      closeable="false"
-      :modal="true"
+      <button class="ok-button" @click="handleAlertClose">{{okButton}}</button>
+    </ModalDialog>
+    <ModalDialog
+      ref="confirmDialog"
     >
       <p class="dialog-content">
         {{ confirmDialogContent }}
       </p>
 
-      <template #footer>
-        <Button
+      <div>
+        <button
           class="cancel-button"
-          :label="cancelButton"
           @click="handleCancel"
-        />
-        <Button
+        >
+        {{cancelButton}}
+        </button>
+        <button
           class="confirm-button"
-          :label="confirmButton"
           @click="handleConfirm"
-        />
-      </template>
-    </Dialog>
-    <Dialog
-      class="dialog"
-      v-model:visible="selectVariationMoveVisible"
-      closable="false"
-      :modal="true"
+        >
+        {{confirmButton}}
+        </button>
+      </div>
+    </ModalDialog>
+    <ModalDialog
+      ref="selectVariationMoveDialog"
     >
       <div class="variationSelectionRoot">
         <h5>{{ variationSelectionTitle }}</h5>
@@ -105,23 +96,24 @@
           </li>
         </ul>
       </div>
-    </Dialog>
+    </ModalDialog>
   </div>
 </template>
 
 <script>
 import parser from "@mliebelt/pgn-parser";
-import HistoryComponent from "./HistoryComponent.vue";
+import HistoryComponent from "@/components/HistoryComponent.vue";
 import GameSelector from "@/components/GameSelector.vue";
+import ModalDialog from "@/components/ModalDialog.vue";
 import { ref, reactive, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import { open } from "@tauri-apps/api/dialog";
+import { open } from "@tauri-apps/api/dialog"
 import { readTextFile } from "@tauri-apps/api/fs";
 
 import { PLAYER_MODE_GUESS_MOVE, PLAYER_MODE_RANDOM_MOVE } from "../constants";
 
 export default {
-  components: { HistoryComponent, GameSelector },
+  components: { HistoryComponent, GameSelector, ModalDialog },
   setup(props, ctx) {
     const { t } = useI18n();
 
@@ -144,11 +136,11 @@ export default {
 
     const gameData = ref();
 
-    const alertDialogVisible = ref(false);
+    const alertDialog = ref();
     const alertDialogContent = ref("");
-    const confirmDialogVisible = ref(false);
+    const confirmDialog = ref();
     const confirmDialogContent = ref("");
-    const selectVariationMoveVisible = ref(false);
+    const selectVariationMoveDialog = ref();
     const okButton = ref(t("dialogs.okButton"));
     const confirmButton = ref(t("dialogs.confirmButton"));
     const cancelButton = ref(t("dialogs.cancelButton"));
@@ -176,26 +168,26 @@ export default {
 
     function handleConfirm() {
       onConfirmHandler.value();
-      confirmDialogVisible.value = false;
+      confirmDialog.value.close();
     }
 
     function handleCancel() {
-      confirmDialogVisible.value = false;
+      confirmDialog.value.close();
     }
 
     function handleAlertClose() {
-      alertDialogVisible.value = false;
+      alertDialog.value.close();
     }
 
     function showAlert(message) {
       alertDialogContent.value = message;
-      alertDialogVisible.value = true;
+      alertDialog.value.open();
     }
 
     function showConfirm(message, onConfirm) {
       confirmDialogContent.value = message;
       onConfirmHandler.value = onConfirm;
-      confirmDialogVisible.value = true;
+      confirmDialog.value.open();
     }
 
     async function doStartNewGame() {
@@ -303,7 +295,8 @@ export default {
         }
         // Lets user choose next move.
         else {
-          selectVariationMoveVisible.value = true;
+          selectVariationMoveDialog.value.open();
+
           // We should NOT try to play next move, in order to avoid infinite loop
           // If we don't return now, this is what will happen, because of following lines !
           return;
@@ -447,12 +440,12 @@ export default {
 
     function handleVariationMoveSelected(moveSan) {
       board.value.playMoveSan(moveSan);
-      selectVariationMoveVisible.value = false;
+      selectVariationMoveDialog.value.close();
     }
 
     function playMainMove() {
       board.value.playMoveSan(nextHalfMoveSan.value);
-      selectVariationMoveVisible.value = false;
+      selectVariationMoveDialog.value.close();
     }
 
     async function stopGameRequest() {
@@ -472,7 +465,7 @@ export default {
     }
 
     watch(gameData, () => {
-      ctx.emit('gameDataReady', gameData.value);
+      ctx.emit("gameDataReady", gameData.value);
     });
 
     return {
@@ -485,9 +478,9 @@ export default {
       handleMoveDone,
       handlePositionRequest,
       playersTypes,
-      alertDialogVisible,
+      alertDialog,
       alertDialogContent,
-      confirmDialogVisible,
+      confirmDialog,
       confirmDialogContent,
       okButton,
       confirmButton,
@@ -497,7 +490,7 @@ export default {
       handleAlertClose,
       handleVariationMoveSelected,
       playMainMove,
-      selectVariationMoveVisible,
+      selectVariationMoveDialog,
       variationSelectionTitle,
       nextHalfMoveSan,
       nextHalfMoveVariationsSanList,
@@ -561,5 +554,11 @@ span.standard {
 
 loloof64-chessboard {
   margin: 0 10px;
+}
+
+.ok-button,
+.confirm-button,
+.cancel-button {
+  font-size: 1.1rem;
 }
 </style>

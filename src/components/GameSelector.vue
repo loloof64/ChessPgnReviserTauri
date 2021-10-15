@@ -1,10 +1,6 @@
 <template>
-  <Dialog
-    v-model:visible="displayModal"
-    :modal="true"
-    :closeOnEscape="false"
-    :dismissableMask="false"
-    :closable="false"
+  <ModalDialog
+    ref="mainModal"
   >
     <h4 class="title">{{ title }}</h4>
     <h5 class="goal">{{ goalCaption }} : {{ goalValue }}</h5>
@@ -61,12 +57,14 @@
       <button class="cancel" @click="cancel">{{ cancelButton }}</button>
       <button class="confirm" @click="confirm">{{ okButton }}</button>
     </div>
-  </Dialog>
+  </ModalDialog>
 </template>
 
 <script>
 import { ref, computed } from "vue";
 import { useI18n } from "vue-i18n";
+
+import ModalDialog from "@/components/ModalDialog";
 
 import {
   PLAYER_MODE_GUESS_MOVE,
@@ -75,6 +73,7 @@ import {
 } from "../constants";
 
 export default {
+  components: { ModalDialog },
   setup() {
     const { t } = useI18n();
     const title = ref(t("newGameDialog.title"));
@@ -87,12 +86,12 @@ export default {
     const autoLabel = ref(t("gameMode.auto"));
     const goalCaption = ref(t("goal.caption"));
     const goalValue = ref(t("goal.unknown"));
-    const displayModal = ref(false);
     const okClicked = ref(false);
     const cancelClicked = ref(false);
     const gameIndex = ref(0);
     const whiteModeParam = ref(PLAYER_MODE_GUESS_MOVE);
     const blackModeParam = ref(PLAYER_MODE_GUESS_MOVE);
+    const mainModal = ref();
     const gameInput = ref();
     const board = ref();
     const boardReversed = ref(false);
@@ -158,7 +157,7 @@ export default {
 
         function checkButtonClicked() {
           if (okClicked.value) {
-            displayModal.value = false;
+            mainModal.value.close();
             clearInterval(handler, checkButtonClicked);
             // Waiting for dialog to be closed
             setTimeout(() => {
@@ -171,7 +170,7 @@ export default {
             return;
           }
           if (cancelClicked.value) {
-            displayModal.value = false;
+            mainModal.value.close();
             clearInterval(handler, checkButtonClicked);
             reject("Cancelled game selection");
             return;
@@ -179,7 +178,7 @@ export default {
         }
 
         handler = setInterval(checkButtonClicked, CHECK_INTERVAL_MS);
-        displayModal.value = true;
+        mainModal.value.open();
         setTimeout(() => {
           // dialog must be visible AND ready before calling this !
           gotoGame();
@@ -290,7 +289,7 @@ export default {
     return {
       board,
       title,
-      displayModal,
+      mainModal,
       open,
       okClicked,
       cancelClicked,
