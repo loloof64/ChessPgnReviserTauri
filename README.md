@@ -4,6 +4,15 @@ Load your chess Pgn file and try to find moves from your side.
 
 Please notice that on Windows, you may have to wait a little the first time to have content in place of the blank window.
 
+## Games goal
+
+You can, in each game of your pgn, add a tag **Goal**, whith one of the following values:
+* "1-0" : for a white win,
+* "0-1" : for a black win,
+* "1/2-1/2" : for a draw.
+
+If you don't put this tag, the goal will be considered as unknown, which can be fine for many games.
+
 ## Credits
 
 Application icon downloaded from https://www.flaticon.com/free-icon/chess_178148 and designed by Flat Icons.
