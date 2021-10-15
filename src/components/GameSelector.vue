@@ -7,6 +7,7 @@
     :closable="false"
   >
     <h4 class="title">{{ title }}</h4>
+    <h5 class="goal">{{ goalCaption }} : {{ goalValue }}</h5>
     <div class="pagination">{{ currentGameNumber }} / {{ gamesCount }}</div>
     <div class="navigation">
       <button :label="firstLabel" @click="gotoFirstGame">&#x21E4;</button>
@@ -84,6 +85,8 @@ export default {
     const guessLabel = ref(t("newGameDialog.guess"));
     const manualLabel = ref(t("newGameDialog.manual"));
     const autoLabel = ref(t("newGameDialog.auto"));
+    const goalCaption = ref(t("goal.caption"));
+    const goalValue = ref(t("goal.unknown"));
     const displayModal = ref(false);
     const okClicked = ref(false);
     const cancelClicked = ref(false);
@@ -118,6 +121,25 @@ export default {
       const isReversed = startPosition.split(" ")[1] === "b";
       boardReversed.value = isReversed;
       gameInput.value.value = gameIndex.value + 1;
+      updateGoalValue();
+    }
+
+    function updateGoalValue() {
+      const selectedGame = gamesArray.value[gameIndex.value];
+      const currentGameGoal = selectedGame.tags["Goal"];
+      const isWhiteWin = currentGameGoal === "1-0";
+      const isBlackWin = currentGameGoal === "0-1";
+      const isDraw = currentGameGoal === "1/2-1/2";
+
+      if (isWhiteWin) {
+        goalValue.value = t("goal.whiteWin");
+      } else if (isBlackWin) {
+        goalValue.value = t("goal.blackWin");
+      } else if (isDraw) {
+        goalValue.value = t("goal.draw");
+      } else {
+        goalValue.value = "?";
+      }
     }
 
     function open(games) {
@@ -304,6 +326,9 @@ export default {
 
       whiteOptionClass,
       blackOptionClass,
+
+      goalCaption,
+      goalValue,
     };
   },
 };
@@ -366,10 +391,15 @@ button {
 }
 
 .title,
+.goal,
 .pagination,
 .navigation * {
   font-size: 1.2rem;
   margin: 0.1rem 0;
+}
+
+.goal {
+  font-size: 1rem;
 }
 
 .navigation button {

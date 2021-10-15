@@ -38,4 +38,11 @@ export default {
     manual: "Automatic game : you select the variations",
     auto: "Automatic game : computer selects randomly the variations",
   },
+  goal: {
+    caption: "Goal",
+    unknown: "?",
+    whiteWin: "Whites win",
+    blackWin: "Blacks win",
+    draw: "Draw",
+  },
 };

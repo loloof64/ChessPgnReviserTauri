@@ -38,4 +38,11 @@ export default {
     manual: "Jeu automatique : vous choisissez les variantes",
     auto: "Jeu automatique : l'ordinateur choisit aléatoirement les variantes",
   },
+  goal: {
+    caption: "Objectif",
+    unknown: "?",
+    whiteWin: "Gain blanc",
+    blackWin: "Gain noir",
+    draw: "Nulle",
+  },
 };

@@ -39,4 +39,11 @@ export default {
     auto:
       "Juego automático: la computadora selecciona aleatoriamente las variaciónes",
   },
+  goal: {
+    caption: "Objetivo",
+    unknown: "?",
+    whiteWin: "Los Blancos ganan",
+    blackWin: "Los Negros ganan",
+    draw: "Draw",
+  },
 };
