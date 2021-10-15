@@ -113,7 +113,7 @@
 import parser from "@mliebelt/pgn-parser";
 import HistoryComponent from "./HistoryComponent.vue";
 import GameSelector from "@/components/GameSelector.vue";
-import { ref, reactive } from "vue";
+import { ref, reactive, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { open } from "@tauri-apps/api/dialog";
 import { readTextFile } from "@tauri-apps/api/fs";
@@ -122,7 +122,7 @@ import { PLAYER_MODE_GUESS_MOVE, PLAYER_MODE_RANDOM_MOVE } from "../constants";
 
 export default {
   components: { HistoryComponent, GameSelector },
-  setup() {
+  setup(props, ctx) {
     const { t } = useI18n();
 
     const board = ref();
@@ -141,6 +141,8 @@ export default {
 
     const whiteMode = ref(PLAYER_MODE_GUESS_MOVE);
     const blackMode = ref(PLAYER_MODE_GUESS_MOVE);
+
+    const gameData = ref();
 
     const alertDialogVisible = ref(false);
     const alertDialogContent = ref("");
@@ -247,6 +249,14 @@ export default {
         playersTypes.whiteHuman = whiteMode.value === PLAYER_MODE_GUESS_MOVE;
         playersTypes.blackHuman = blackMode.value === PLAYER_MODE_GUESS_MOVE;
         const moveNumber = parseInt(startPosition.split(" ")[5]);
+
+        gameData.value = {
+          gameNumber: selectedGameIndex + 1,
+          filePath: selectedFile,
+          gameGoal: selectedGame.tags["Goal"],
+          whiteMode: whiteModeParam,
+          blackMode: blackModeParam,
+        };
 
         setTimeout(async () => {
           history.value.newGame(moveNumber, !startsAsBlack);
@@ -460,6 +470,10 @@ export default {
       board.value.stop();
       history.value.gotoLast();
     }
+
+    watch(gameData, () => {
+      ctx.emit('gameDataReady', gameData.value);
+    });
 
     return {
       board,

@@ -157,9 +157,10 @@ export default {
       let tempNodeIndex = items.value.length;
       let item;
       do {
+        if (tempNodeIndex < 1) break;
         tempNodeIndex--;
         item = items.value[tempNodeIndex];
-      } while (!item.moveFan);
+      } while (!item?.moveFan);
 
       context.emit("position-request", {
         ...item,

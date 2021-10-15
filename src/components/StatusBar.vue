@@ -1,16 +1,16 @@
 <template>
-  <div id="root">
+  <div id="statusRoot">
     <span v-if="!gameInProgress">
       {{ noGameRunning }}
     </span>
 
     <span v-if="gameInProgress"> {{ white }} : {{ whiteMode }} </span>
-    <img v-if="gameInProgress" :src="whiteModeImg" />
+    <img v-if="gameInProgress" :class="whiteModeClasses" />
 
     <span v-if="gameInProgress"> - </span>
 
     <span v-if="gameInProgress"> {{ black }} : {{ blackMode }} </span>
-    <img v-if="gameInProgress" :src="blackModeImg" />
+    <img v-if="gameInProgress" :class="blackModeClasses" />
 
     <span v-if="gameInProgress" class="section"> | </span>
 
@@ -57,8 +57,8 @@ export default {
     const goal = ref(t("goal.caption"));
     const whiteMode = ref(getWhiteModeString());
     const blackMode = ref(getBlackModeString());
-    const whiteModeImg = ref(getWhiteModeImg());
-    const blackModeImg = ref(getBlackModeImg());
+    const whiteModeClasses = ref(getWhiteModeClasses());
+    const blackModeClasses = ref(getBlackModeClasses());
     const gameInProgress = computed(() => !!props.gameData);
     const gameNumber = ref(props.gameData?.gameNumber);
     const simpleFileName = ref(getSimpleFileName(props.gameData?.filePath));
@@ -106,31 +106,31 @@ export default {
       return t("goal.unknown");
     }
 
-    function getWhiteModeImg() {
+    function getWhiteModeClasses() {
       if (props.gameData?.whiteMode === PLAYER_MODE_GUESS_MOVE)
-        return "../assets/images/question_mark.png";
+        return {"guess": true, "manual": false, "auto": false};
       if (props.gameData?.whiteMode === PLAYER_MODE_RANDOM_MOVE)
-        return "../assets/images/dices.png";
+        return {"guess": false, "manual": false, "auto": true};
       if (props.gameData?.whiteMode === PLAYER_MODE_CHOOSE_MOVE)
-        return "../assets/images/cross_arrows.png";
-      return undefined;
+        return {"guess": false, "manual": true, "auto": false};
+      return {"guess": false, "manual": false, "auto": false};
     }
 
-    function getBlackModeImg() {
+    function getBlackModeClasses() {
       if (props.gameData?.blackMode === PLAYER_MODE_GUESS_MOVE)
-        return "../assets/images/question_mark.png";
+        return {"guess": true, "manual": false, "auto": false};
       if (props.gameData?.blackMode === PLAYER_MODE_RANDOM_MOVE)
-        return "../assets/images/dices.png";
+        return {"guess": false, "manual": false, "auto": true};
       if (props.gameData?.blackMode === PLAYER_MODE_CHOOSE_MOVE)
-        return "../assets/images/cross_arrows.png";
-      return undefined;
+        return {"guess": false, "manual": true, "auto": false};
+      return {"guess": false, "manual": false, "auto": false};
     }
 
     watchEffect(() => {
       whiteMode.value = getWhiteModeString();
       blackMode.value = getBlackModeString();
-      whiteModeImg.value = getWhiteModeImg();
-      blackModeImg.value = getBlackModeImg();
+      whiteModeClasses.value = getWhiteModeClasses();
+      blackModeClasses.value = getBlackModeClasses();
       gameNumber.value = props.gameData?.gameNumber;
       simpleFileName.value = getSimpleFileName(props.gameData?.filePath);
       gameGoal.value = getGameGoalString(props.gameData?.gameGoal);
@@ -145,8 +145,8 @@ export default {
       goal,
       whiteMode,
       blackMode,
-      whiteModeImg,
-      blackModeImg,
+      whiteModeClasses,
+      blackModeClasses,
       gameInProgress,
       gameNumber,
       simpleFileName,
@@ -157,12 +157,12 @@ export default {
 </script>
 
 <style scoped>
-#root {
+#statusRoot {
   width: 100%;
   height: 10vh;
   background-color: gray;
   color: black;
-  font-size: 1.2rem;
+  font-size: 0.6rem;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -170,15 +170,27 @@ export default {
 }
 
 span {
-  margin: 0 2vw;
+  margin: 0 0.5vw;
 }
 
 span.section {
-  margin: 0 4vw;
+  margin: 0 1vw;
 }
 
 img {
-  width: 8vh;
-  height: 8vh;
+  width: 4vh;
+  height: 4vh;
+}
+
+.guess {
+  content: url("../assets/images/question_mark.png");
+}
+
+.manual {
+  content: url("../assets/images/cross_arrows.png");
+}
+
+.auto {
+  content: url("../assets/images/dices.png");
 }
 </style>

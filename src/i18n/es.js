@@ -49,7 +49,7 @@ export default {
     draw: "Draw",
   },
   statusBar: {
-    noGameRunning: "No hay juego en ejecución",
+    noGameRunning: "No hay juego empezado",
     white: "Blancos",
     black: "Negros",
     game: "Juego",

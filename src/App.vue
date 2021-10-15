@@ -1,6 +1,6 @@
 <template>
   <div id="root">
-    <MainZone />
+    <MainZone @gameDataReady="handleGameDataReady" />
     <StatusBar :gameData="gameData" />
   </div>
 </template>
@@ -16,7 +16,11 @@ export default {
   setup() {
     const gameData = ref();
 
-    return { gameData };
+    function handleGameDataReady(payload) {
+      gameData.value = payload;
+    }
+
+    return { gameData, handleGameDataReady };
   },
   components: {
     MainZone,

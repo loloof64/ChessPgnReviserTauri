@@ -48,7 +48,7 @@ export default {
     draw: "Nulle",
   },
   statusBar: {
-    noGameRunning: "Aucune partie en cours",
+    noGameRunning: "Aucune partie démarrée",
     white: "Blancs",
     black: "Noirs",
     game: "Partie",
