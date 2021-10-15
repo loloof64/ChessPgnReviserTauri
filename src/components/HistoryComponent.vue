@@ -115,6 +115,10 @@ export default {
       }
     }
 
+    function nodeHoldsAMove(node) {
+      return !!(node.positionFen);
+    }
+
     function gotoNext() {
       // We don't want to update selected node until confirmation from board.
       let tempNodeIndex = selectedNodeIndex.value;
@@ -127,10 +131,19 @@ export default {
         const item = items.value[tempNodeIndex];
         context.emit("position-request", { ...item, index: tempNodeIndex });
       } else {
+        // Forwards
         do {
-          if (tempNodeIndex >= items.value.length - 1) break;
+          const hasReachedLastNode = tempNodeIndex >= items.value.length - 1;
+          if (hasReachedLastNode) break;
           tempNodeIndex++;
-        } while (!items.value[tempNodeIndex].positionFen);
+        } while (!nodeHoldsAMove(items.value[tempNodeIndex]));
+
+        // Backwards
+        do {
+          if (nodeHoldsAMove(items.value[tempNodeIndex])) break;
+          tempNodeIndex--;
+        } while(tempNodeIndex > 0)
+
         const item = items.value[tempNodeIndex];
 
         context.emit("position-request", {
