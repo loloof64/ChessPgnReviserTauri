@@ -116,7 +116,7 @@ export default {
     }
 
     function nodeHoldsAMove(node) {
-      return !!(node.positionFen);
+      return !!node.positionFen;
     }
 
     function gotoNext() {
@@ -131,6 +131,12 @@ export default {
         const item = items.value[tempNodeIndex];
         context.emit("position-request", { ...item, index: tempNodeIndex });
       } else {
+        const notAnyMove = items.value.length === 0;
+        if (notAnyMove) {
+          context.emit("position-request", {});
+          return;
+        }
+
         // Forwards
         do {
           const hasReachedLastNode = tempNodeIndex >= items.value.length - 1;
@@ -142,7 +148,7 @@ export default {
         do {
           if (nodeHoldsAMove(items.value[tempNodeIndex])) break;
           tempNodeIndex--;
-        } while(tempNodeIndex > 0)
+        } while (tempNodeIndex > 0);
 
         const item = items.value[tempNodeIndex];
 
@@ -154,6 +160,12 @@ export default {
     }
 
     function gotoLast() {
+      const notAnyMove = items.value.length === 0;
+      if (notAnyMove) {
+        context.emit("position-request", {});
+        return;
+      }
+
       let tempNodeIndex = items.value.length;
       let item;
       do {
@@ -162,12 +174,10 @@ export default {
         item = items.value[tempNodeIndex];
       } while (!item?.moveFan);
 
-      const valueToEmit = tempNodeIndex < 1 ? {} : {
+      context.emit("position-request", {
         ...item,
         index: tempNodeIndex,
-      };
-
-      context.emit("position-request", valueToEmit);
+      });
     }
 
     return {

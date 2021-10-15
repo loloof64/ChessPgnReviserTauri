@@ -41,5 +41,6 @@ FreeSerif font downloaded from https://fr.fonts2u.com/free-serif.police
 
 * edit **package.json**, and update fields **version** and **release_message**
 * edit **tauri.conf.json** and update field **version**
+* edit **Cargo.toml** and update field **version**
 
 So that a Github Action will be able to publish a new release
