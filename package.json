@@ -1,8 +1,8 @@
 {
   "name": "chess-pgn-reviser",
-  "version": "0.3.4",
+  "version": "0.4.0",
   "private": true,
-  "release_message": "Some bug fixes.",
+  "release_message": "Added game modes.",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",

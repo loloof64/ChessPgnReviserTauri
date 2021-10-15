@@ -222,7 +222,9 @@ export default {
           selectedGame.tags["FEN"] ||
           "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
         const startsAsBlack = startPosition.split(" ")[1] === "b";
-        reversed.value = startsAsBlack;
+        const whiteSideNotInGuessMode = whiteModeParam !== PLAYER_MODE_GUESS_MOVE;
+        const blackSideInGuessMode = blackModeParam === PLAYER_MODE_GUESS_MOVE;
+        reversed.value = startsAsBlack && blackSideInGuessMode && whiteSideNotInGuessMode;
         expectedMoves = selectedGame.moves;
         currentNode = filterMoves(expectedMoves);
         nodeIndex.value = 0;
