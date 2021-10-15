@@ -34,6 +34,8 @@ export default {
     last: "Last game",
     whiteMode: "White",
     blackMode: "Black",
+  },
+  gameMode: {
     guess: "Guess the move",
     manual: "Automatic game : you select the variations",
     auto: "Automatic game : computer selects randomly the variations",
@@ -44,5 +46,12 @@ export default {
     whiteWin: "Whites win",
     blackWin: "Blacks win",
     draw: "Draw",
+  },
+  statusBar: {
+    noGameRunning: "No game running",
+    white: "White",
+    black: "Black",
+    game: "Game",
+    number: "n°",
   },
 };

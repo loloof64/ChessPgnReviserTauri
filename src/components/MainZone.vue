@@ -32,14 +32,14 @@
         white_cell_color="navajowhite"
         black_cell_color="peru"
         background="gray"
-        :size="400"
+        :size="450"
         @move-done="handleMoveDone"
         @waiting-manual-move="() => console.log('manual move mode')"
       />
       <history-component
         ref="history"
         width="400px"
-        height="370px"
+        height="410px"
         @position-request="handlePositionRequest"
       />
       <game-selector ref="gameSelector" />
@@ -526,7 +526,7 @@ span.standard {
   flex-direction: row;
   justify-content: space-evenly;
   align-self: flex-start;
-  width: 850px;
+  width: 100%;
 }
 
 .variationSelectionRoot {
@@ -543,5 +543,9 @@ span.standard {
 .variationSelectionItem {
   list-style-type: none;
   font-size: 1.2rem;
+}
+
+loloof64-chessboard {
+  margin: 0 10px;
 }
 </style>

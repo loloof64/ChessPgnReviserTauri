@@ -34,6 +34,8 @@ export default {
     last: "Dernière partie",
     whiteMode: "Blancs",
     blackMode: "Noirs",
+  },
+  gameMode: {
     guess: "Deviner les coups",
     manual: "Jeu automatique : vous choisissez les variantes",
     auto: "Jeu automatique : l'ordinateur choisit aléatoirement les variantes",
@@ -45,4 +47,11 @@ export default {
     blackWin: "Gain noir",
     draw: "Nulle",
   },
+  statusBar: {
+    noGameRunning: "Aucune partie en cours",
+    white: "Blancs",
+    black: "Noirs",
+    game: "Partie",
+    number: "n°",
+  }
 };

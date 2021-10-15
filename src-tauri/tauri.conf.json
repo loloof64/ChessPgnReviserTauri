@@ -60,8 +60,8 @@
     "windows": [
       {
         "title": "Chess Pgn Reviser",
-        "width": 850,
-        "height": 600,
+        "width": 900,
+        "height": 610,
         "resizable": false,
         "fullscreen": false
       }

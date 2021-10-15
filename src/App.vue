@@ -1,33 +1,40 @@
 <template>
-  <MainZone/>
+  <div id="root">
+    <MainZone />
+    <StatusBar :gameData="gameData" />
+  </div>
 </template>
 
 <script>
-import MainZone from './components/MainZone.vue'
-import './App.css';
+import { ref } from "vue";
+import MainZone from "./components/MainZone.vue";
+import StatusBar from "./components/StatusBar.vue";
+import "./App.css";
 
 export default {
-  name: 'App',
+  name: "App",
+  setup() {
+    const gameData = ref();
+
+    return { gameData };
+  },
   components: {
-    MainZone
-  }
-}
+    MainZone,
+    StatusBar,
+  },
+};
 </script>
 
-<style>
-
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+<style scoped>
+#root {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
 }
 
 @font-face {
   font-family: "Free Serif";
-  src: local("Free Serif"),
-   url(./assets/fonts/FreeSerif.ttf) format("truetype");
+  src: local("Free Serif"), url(./assets/fonts/FreeSerif.ttf) format("truetype");
 }
 </style>

@@ -34,6 +34,8 @@ export default {
     last: "Último juego",
     whiteMode: "Blancos",
     blackMode: "Negros",
+  },
+  gameMode: {
     guess: "Adivina el golpe",
     manual: "Juego automático: usted selecciona las variaciónes",
     auto:
@@ -45,5 +47,12 @@ export default {
     whiteWin: "Los Blancos ganan",
     blackWin: "Los Negros ganan",
     draw: "Draw",
+  },
+  statusBar: {
+    noGameRunning: "No hay juego en ejecución",
+    white: "Blancos",
+    black: "Negros",
+    game: "Juego",
+    number: "n°",
   },
 };

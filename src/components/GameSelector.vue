@@ -82,9 +82,9 @@ export default {
     const cancelButton = ref(t("dialogs.cancelButton"));
     const whiteModeLabel = ref(t("newGameDialog.whiteMode"));
     const blackModeLabel = ref(t("newGameDialog.blackMode"));
-    const guessLabel = ref(t("newGameDialog.guess"));
-    const manualLabel = ref(t("newGameDialog.manual"));
-    const autoLabel = ref(t("newGameDialog.auto"));
+    const guessLabel = ref(t("gameMode.guess"));
+    const manualLabel = ref(t("gameMode.manual"));
+    const autoLabel = ref(t("gameMode.auto"));
     const goalCaption = ref(t("goal.caption"));
     const goalValue = ref(t("goal.unknown"));
     const displayModal = ref(false);
