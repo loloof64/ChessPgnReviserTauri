@@ -3,7 +3,7 @@
     <div id="buttons_zone">
       <img
         class="button"
-        @click="newGame"
+        @click="newGameRequest"
         width="50"
         height="50"
         src="../assets/images/start.png"
@@ -14,6 +14,13 @@
         width="50"
         height="50"
         src="../assets/images/reverse.png"
+      />
+      <img
+        class="button"
+        @click="stopGameRequest"
+        width="50"
+        height="50"
+        src="../assets/images/stop.png"
       />
     </div>
     <div id="game_zone">
@@ -153,7 +160,7 @@ export default {
 
     const onConfirmHandler = ref(() => {});
 
-    async function newGame() {
+    async function newGameRequest() {
       const boardPosition = await board.value.getCurrentPosition();
       const boardStalled = boardPosition.startsWith(
         "8/8/8/8/8/8/8/8 w - - 0 1"
@@ -222,9 +229,11 @@ export default {
           selectedGame.tags["FEN"] ||
           "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
         const startsAsBlack = startPosition.split(" ")[1] === "b";
-        const whiteSideNotInGuessMode = whiteModeParam !== PLAYER_MODE_GUESS_MOVE;
+        const whiteSideNotInGuessMode =
+          whiteModeParam !== PLAYER_MODE_GUESS_MOVE;
         const blackSideInGuessMode = blackModeParam === PLAYER_MODE_GUESS_MOVE;
-        reversed.value = startsAsBlack && blackSideInGuessMode && whiteSideNotInGuessMode;
+        reversed.value =
+          startsAsBlack && blackSideInGuessMode && whiteSideNotInGuessMode;
         expectedMoves = selectedGame.moves;
         currentNode = filterMoves(expectedMoves);
         nodeIndex.value = 0;
@@ -314,7 +323,7 @@ export default {
 
     // Strips result node from moves array.
     function filterMoves(nodesArray) {
-      return nodesArray.filter((elt) => !!(elt.notation));
+      return nodesArray.filter((elt) => !!elt.notation);
     }
 
     // Updates current move pointer, next main move and next variations (if possible).
@@ -331,8 +340,7 @@ export default {
         setTimeout(() => {
           playNextMoveIfPossible();
         }, 50);
-      }
-      else {
+      } else {
         handleGameWon();
       }
     }
@@ -391,8 +399,9 @@ export default {
       }
       // User found a variation move
       else if (matchAVariationMove) {
-        currentNode =
-          filterMoves(currentNode[nodeIndex.value].variations[expectedVariationMoveIndex]);
+        currentNode = filterMoves(
+          currentNode[nodeIndex.value].variations[expectedVariationMoveIndex]
+        );
         nodeIndex.value = 0;
         history.value.addItem(payload);
         advanceNode();
@@ -436,12 +445,28 @@ export default {
       selectVariationMoveVisible.value = false;
     }
 
+    async function stopGameRequest() {
+      const boardPosition = await board.value.getCurrentPosition();
+      const boardStalled = boardPosition.startsWith(
+        "8/8/8/8/8/8/8/8 w - - 0 1"
+      );
+      const gameInProgress = board.value.gameIsInProgress();
+      if (!boardStalled && gameInProgress) {
+        showConfirm(t("dialogs.stopGameConfirmation"), doStopGame);
+      }
+    }
+
+    function doStopGame() {
+      board.value.stop();
+      history.value.gotoLast();
+    }
+
     return {
       board,
       history,
       gameSelector,
       reversed,
-      newGame,
+      newGameRequest,
       reverseBoard,
       handleMoveDone,
       handlePositionRequest,
@@ -464,6 +489,7 @@ export default {
       nextHalfMoveVariationsSanList,
       variationSelectionMainMoveLabel,
       variationSelectionVariationsLabel,
+      stopGameRequest,
     };
   },
 };
