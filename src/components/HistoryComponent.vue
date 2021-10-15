@@ -162,10 +162,12 @@ export default {
         item = items.value[tempNodeIndex];
       } while (!item?.moveFan);
 
-      context.emit("position-request", {
+      const valueToEmit = tempNodeIndex < 1 ? {} : {
         ...item,
         index: tempNodeIndex,
-      });
+      };
+
+      context.emit("position-request", valueToEmit);
     }
 
     return {
