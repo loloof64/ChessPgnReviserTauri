@@ -224,7 +224,7 @@ export default {
         const startsAsBlack = startPosition.split(" ")[1] === "b";
         reversed.value = startsAsBlack;
         expectedMoves = selectedGame.moves;
-        currentNode = expectedMoves;
+        currentNode = filterMoves(expectedMoves);
         nodeIndex.value = 0;
         nextHalfMoveSan.value =
           expectedMoves[nodeIndex.value].notation.notation;
@@ -257,16 +257,6 @@ export default {
       const currentMoveInGuessMode =
         (whiteTurn && whiteMode.value === PLAYER_MODE_GUESS_MOVE) ||
         (!whiteTurn && blackMode.value === PLAYER_MODE_GUESS_MOVE);
-
-      ////////////////////////////////////////////
-      console.log("-----------------");
-      console.log("currentMoveInGuessMode", currentMoveInGuessMode);
-      console.log("nextHalfMoveSan", nextHalfMoveSan);
-      console.log(
-        "nextHalfMoveVariationsSanList",
-        nextHalfMoveVariationsSanList
-      );
-      ////////////////////////////////////////////
 
       if (currentMoveInGuessMode) return;
       const nextMoveHasVariations =
@@ -302,8 +292,6 @@ export default {
       else {
         board.value.playMoveSan(nextHalfMoveSan.value);
       }
-
-      advanceNode();
     }
 
     function reverseBoard() {
@@ -322,18 +310,29 @@ export default {
       );
     }
 
-    // Updates next main move and next variations.
+    // Strips result node from moves array.
+    function filterMoves(nodesArray) {
+      return nodesArray.filter((elt) => !!(elt.notation));
+    }
+
+    // Updates current move pointer, next main move and next variations (if possible).
     // Also tries to play next move if should be played automatically.
     function advanceNode() {
-      nextHalfMoveSan.value = currentNode[nodeIndex.value].notation.notation;
-      nextHalfMoveVariationsSanList.value = currentNode[
-        nodeIndex.value
-      ].variations.map((elt) => elt[0].notation.notation);
+      nodeIndex.value++;
+      if (nodeIndex.value < currentNode.length) {
+        nextHalfMoveSan.value = currentNode[nodeIndex.value].notation.notation;
+        nextHalfMoveVariationsSanList.value = currentNode[
+          nodeIndex.value
+        ].variations.map((elt) => elt[0].notation.notation);
 
-      // Lets the interface refresh before next move if not manual.
-      setTimeout(() => {
-        playNextMoveIfPossible();
-      }, 50);
+        // Lets the interface refresh before next move if not manual.
+        setTimeout(() => {
+          playNextMoveIfPossible();
+        }, 50);
+      }
+      else {
+        handleGameWon();
+      }
     }
 
     function handleGameWon() {
@@ -375,31 +374,26 @@ export default {
       return `${firstPart}${middlePart}${lastPart}`;
     }
 
+    /* Be careful !
+    Called after EACH move : human or not
+    */
     function handleMoveDone(event) {
       const payload = event.detail.moveObject;
       const isExpectecMainMove = checkMainMoveCorrectness(payload);
       const expectedVariationMoveIndex = getVariationMoveIndex(payload);
+      const matchAVariationMove = expectedVariationMoveIndex >= 0;
       // User found the main move
       if (isExpectecMainMove) {
         history.value.addItem(payload);
-        nodeIndex.value++;
-        if (nodeIndex.value < currentNode.length) {
-          advanceNode();
-        } else {
-          handleGameWon();
-        }
+        advanceNode();
       }
       // User found a variation move
-      else if (expectedVariationMoveIndex >= 0) {
+      else if (matchAVariationMove) {
         currentNode =
-          currentNode[nodeIndex.value].variations[expectedVariationMoveIndex];
-        nodeIndex.value = 1;
+          filterMoves(currentNode[nodeIndex.value].variations[expectedVariationMoveIndex]);
+        nodeIndex.value = 0;
         history.value.addItem(payload);
-        if (nodeIndex.value < currentNode.length) {
-          advanceNode();
-        } else {
-          handleGameWon();
-        }
+        advanceNode();
       }
       // User failed to find an expected move.
       else {
@@ -433,13 +427,11 @@ export default {
     function handleVariationMoveSelected(moveSan) {
       board.value.playMoveSan(moveSan);
       selectVariationMoveVisible.value = false;
-      advanceNode();
     }
 
     function playMainMove() {
       board.value.playMoveSan(nextHalfMoveSan.value);
       selectVariationMoveVisible.value = false;
-      advanceNode();
     }
 
     return {
