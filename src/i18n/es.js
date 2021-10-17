@@ -25,6 +25,9 @@ export default {
     variationSelectionTitle: "Seleccione el siguiente golpe",
     variationSelectionMainMove: "Golpe principal",
     variationSelectionVariations: "Variaciones",
+    cancelledSaveGame: "Guardado del juego cancelado.",
+    saveGameError: "Ocurrió un error: se canceló el guardado del juego.",
+    saveGameSuccess: "Juego guardado.",
   },
   newGameDialog: {
     title: "Selecciona el juego para estudiar :",

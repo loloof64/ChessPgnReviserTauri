@@ -28,6 +28,7 @@ Other images have been downloaded from flaticon :
 * cross_arrows : downloaded at https://www.flaticon.com/free-icon/shuffle-crossing-arrows_59489 and designed by FreePik
 * question_mark : downloaded at https://www.flaticon.com/free-icon/question-mark-on-a-circular-black-background_25400 and designed by Dave Gandy
 * dices : downloaded at https://www.flaticon.com/free-icon/dice_1009624 and designed by Vitaly Gorbachev
+* disk : downloaded at https://www.flaticon.com/free-icon/disk_718913 and designed by DinosoftLabs
 
 FreeSerif font downloaded from https://fr.fonts2u.com/free-serif.police
 

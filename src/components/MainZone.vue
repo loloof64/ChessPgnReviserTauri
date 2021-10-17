@@ -22,6 +22,14 @@
         height="50"
         src="../assets/images/stop.png"
       />
+      <img
+        class="button"
+        v-if="gameInReview"
+        @click="saveGameToPgn"
+        width="50"
+        height="50"
+        src="../assets/images/disk.png"
+      />
     </div>
     <div id="game_zone">
       <loloof64-chessboard
@@ -34,7 +42,6 @@
         background="gray"
         :size="450"
         @move-done="handleMoveDone"
-        @waiting-manual-move="() => console.log('manual move mode')"
       />
       <history-component
         ref="history"
@@ -44,40 +51,30 @@
       />
       <game-selector ref="gameSelector" />
     </div>
-    <ModalDialog
-      ref="alertDialog"
-    >
+    <ModalDialog ref="alertDialog">
       <p class="dialog-content">
         {{ alertDialogContent }}
       </p>
 
-      <button class="ok-button" @click="handleAlertClose">{{okButton}}</button>
+      <button class="ok-button" @click="handleAlertClose">
+        {{ okButton }}
+      </button>
     </ModalDialog>
-    <ModalDialog
-      ref="confirmDialog"
-    >
+    <ModalDialog ref="confirmDialog">
       <p class="dialog-content">
         {{ confirmDialogContent }}
       </p>
 
       <div>
-        <button
-          class="cancel-button"
-          @click="handleCancel"
-        >
-        {{cancelButton}}
+        <button class="cancel-button" @click="handleCancel">
+          {{ cancelButton }}
         </button>
-        <button
-          class="confirm-button"
-          @click="handleConfirm"
-        >
-        {{confirmButton}}
+        <button class="confirm-button" @click="handleConfirm">
+          {{ confirmButton }}
         </button>
       </div>
     </ModalDialog>
-    <ModalDialog
-      ref="selectVariationMoveDialog"
-    >
+    <ModalDialog ref="selectVariationMoveDialog">
       <div class="variationSelectionRoot">
         <h5>{{ variationSelectionTitle }}</h5>
         <span class="subtitle">{{ variationSelectionMainMoveLabel }}</span>
@@ -107,10 +104,14 @@ import GameSelector from "@/components/GameSelector.vue";
 import ModalDialog from "@/components/ModalDialog.vue";
 import { ref, reactive, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import { open } from "@tauri-apps/api/dialog"
-import { readTextFile } from "@tauri-apps/api/fs";
+import { open, save } from "@tauri-apps/api/dialog";
+import { readTextFile, writeFile } from "@tauri-apps/api/fs";
 
-import { PLAYER_MODE_GUESS_MOVE, PLAYER_MODE_RANDOM_MOVE } from "../constants";
+import {
+  PLAYER_MODE_CHOOSE_MOVE,
+  PLAYER_MODE_GUESS_MOVE,
+  PLAYER_MODE_RANDOM_MOVE,
+} from "../constants";
 
 export default {
   components: { HistoryComponent, GameSelector, ModalDialog },
@@ -136,6 +137,9 @@ export default {
 
     const gameData = ref();
 
+    const gameString = ref('');
+
+    const gameInReview = ref(false);
     const alertDialog = ref();
     const alertDialogContent = ref("");
     const confirmDialog = ref();
@@ -195,7 +199,7 @@ export default {
         const selectedFile = await open({
           directory: false,
           multiple: false,
-          filters: [{ name: t('misc.pgnFilter'), extensions: ["pgn"] }],
+          filters: [{ name: t("misc.pgnFilter"), extensions: ["pgn"] }],
         });
         if (!selectedFile) {
           showAlert(t("dialogs.cancelledNewGame"));
@@ -251,6 +255,7 @@ export default {
         };
 
         setTimeout(async () => {
+          gameInReview.value = false;
           history.value.newGame(moveNumber, !startsAsBlack);
           await board.value.newGame(startPosition);
 
@@ -350,7 +355,9 @@ export default {
 
     function handleGameWon() {
       board.value.stop();
+      gameString.value = getGamePgnString();
       history.value.gotoLast();
+      gameInReview.value = true;
       showAlert(t("dialogs.gameWon"));
     }
 
@@ -420,7 +427,9 @@ export default {
         );
         history.value.addItem(payload);
         board.value.stop();
+        gameString.value = getGamePgnString();
         history.value.gotoLast();
+        gameInReview.value = true;
         showAlert(
           t("dialogs.gameLost", {
             mainMove: moveFan,
@@ -461,7 +470,50 @@ export default {
 
     function doStopGame() {
       board.value.stop();
+      gameString.value = getGamePgnString();
       history.value.gotoLast();
+      gameInReview.value = true;
+    }
+
+    function gameModeToPlayerName(gameMode) {
+      if (gameMode === PLAYER_MODE_GUESS_MOVE) return "Player (guess moves)";
+      if (gameMode === PLAYER_MODE_RANDOM_MOVE)
+        return "Computer (automatic moves selection)";
+      if (gameMode === PLAYER_MODE_CHOOSE_MOVE)
+        return "Computer (manual moves selection)";
+      return "?";
+    }
+
+    /**
+     * Gets the game pgn string
+     * Must be called before an history move is commited, as it clears the current game data !
+     */
+    function getGamePgnString() {
+      let whiteName = gameModeToPlayerName(whiteMode.value);
+      let blackName = gameModeToPlayerName(blackMode.value);
+      return board.value.gamePgn({ whiteName, blackName });
+    }
+
+    async function saveGameToPgn() {
+      try {
+        const selectedFile = await save({
+          filters: [{ name: t("misc.pgnFilter"), extensions: ["pgn"] }],
+        });
+        if (!selectedFile) {
+          showAlert(t("dialogs.cancelledSaveGame"));
+          return;
+        }
+
+        await writeFile({
+          contents: gameString.value,
+          path: selectedFile,
+        });
+
+        showAlert(t("dialogs.saveGameSuccess"));
+      } catch (ex) {
+        console.error(ex);
+        showAlert(t("dialogs.saveGameError"));
+      }
     }
 
     watch(gameData, () => {
@@ -497,6 +549,8 @@ export default {
       variationSelectionMainMoveLabel,
       variationSelectionVariationsLabel,
       stopGameRequest,
+      gameInReview,
+      saveGameToPgn,
     };
   },
 };

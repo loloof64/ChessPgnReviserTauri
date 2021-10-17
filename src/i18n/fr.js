@@ -25,6 +25,9 @@ export default {
     variationSelectionTitle: "Choisissez le prochain coup",
     variationSelectionMainMove: "Coup principal",
     variationSelectionVariations: "Variantes",
+    cancelledSaveGame: "Annulation de la sauvegarde du fichier.",
+    saveGameError: "Une erreur est survenue: annulation de la sauvegarde de la partie.",
+    saveGameSuccess: "Partie sauvegardée.",
   },
   newGameDialog: {
     title: "Choisissez la partie à étudier :",

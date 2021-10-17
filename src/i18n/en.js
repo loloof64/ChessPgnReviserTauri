@@ -25,6 +25,9 @@ export default {
     variationSelectionTitle: "Select the next move",
     variationSelectionMainMove: "Main move",
     variationSelectionVariations: "Variations",
+    cancelledSaveGame: "Cancelled game saving.",
+    saveGameError: "An error occured : cancelled game saving.",
+    saveGameSuccess: "Game saved.",
   },
   newGameDialog: {
     title: "Select the game to study :",

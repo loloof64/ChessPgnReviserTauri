@@ -1,6 +1,6 @@
 [package]
 name = "app"
-version = "0.6.0"
+version = "1.0.0"
 description = "Load your chess Pgn file and try to find moves from your side."
 authors = [ "Laurent Bernabe" ]
 license = "MIT"
@@ -15,7 +15,7 @@ tauri-build = { version = "1.0.0-beta.4" }
 [dependencies]
 serde_json = "1.0"
 serde = { version = "1.0", features = [ "derive" ] }
-tauri = { version = "1.0.0-beta.8", features = ["dialog-open", "dialog-save", "fs-read-text-file"] }
+tauri = { version = "1.0.0-beta.8", features = ["dialog-open", "dialog-save", "fs-read-text-file", "fs-write-file"] }
 
 [features]
 default = [ "custom-protocol" ]

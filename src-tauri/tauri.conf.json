@@ -1,7 +1,7 @@
 {
   "package": {
     "productName": "ChessPgnReviser",
-    "version": "0.6.0"
+    "version": "1.0.0"
   },
   "build": {
     "distDir": "Set automatically by Vue CLI plugin",
@@ -54,7 +54,8 @@
         "save": true
       },
       "fs": {
-        "readTextFile": true
+        "readTextFile": true,
+        "writeFile": true
       }
     },
     "windows": [
