@@ -9,7 +9,7 @@ Please notice that on Windows, you may have to wait a little the first time to h
 You can download executables in the release section of this repository :
 * Windows : *.msi
 * Mac OS : *.dmg
-* Linux : *.deb (Debian package), or *.appimage (no any dependency)
+* Linux : *.deb (Debian package), or *.appimage (no any dependency). Notice that you can integrate AppImage format in your Linux Desktop with the program [AppImage Launcer](https://github.com/TheAssassin/AppImageLauncher).
 
 ## Games goal
 
