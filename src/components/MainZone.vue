@@ -231,7 +231,7 @@ export default {
           whiteModeParam !== PLAYER_MODE_GUESS_MOVE;
         const blackSideInGuessMode = blackModeParam === PLAYER_MODE_GUESS_MOVE;
         reversed.value =
-          startsAsBlack && blackSideInGuessMode && whiteSideNotInGuessMode;
+          blackSideInGuessMode && whiteSideNotInGuessMode;
         expectedMoves = selectedGame.moves;
         currentNode = filterMoves(expectedMoves);
         nodeIndex.value = 0;

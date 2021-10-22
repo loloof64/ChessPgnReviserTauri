@@ -1,6 +1,6 @@
 [package]
 name = "app"
-version = "1.0.0"
+version = "1.0.2"
 description = "Load your chess Pgn file and try to find moves from your side."
 authors = [ "Laurent Bernabe" ]
 license = "MIT"

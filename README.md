@@ -2,7 +2,14 @@
 
 Load your chess Pgn file and try to find moves from your side.
 
-Please notice that on Windows, you may have to wait a little the first time to have content in place of the blank window.
+Please notice that on Windows, you may have to wait a little the first time to have content in place of the blank window. Also, please check that your input PGN file is in UTF-8 format, otherwise the game won't be loaded and will throw an error. Apologizing for setting this constraint.
+
+## Executables
+
+You can download executables in the release section of this repository :
+* Windows : *.msi
+* Mac OS : *.dmg
+* Linux : *.deb (Debian package), or *.appimage (no any dependency)
 
 ## Games goal
 
